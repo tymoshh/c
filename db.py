@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 
+load_dotenv()
+
 dbcon = None
 
 def initiateConnection():
