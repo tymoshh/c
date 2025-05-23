@@ -1,19 +1,33 @@
 #!/usr/bin/env python3
 
+import cgi
 import json
+import sys
 
-# Set the HTTP header to return JSON content
-print("Content-Type: application/json")
-print()  # blank line to end headers
+# json
+# action
+# username
+# password
 
-# Create a sample dictionary to return as JSON
-response = {
-    "message": "This is an example JSON response",
-    "status": "success",
-    "data": {
-        "example_key": "example_value"
-    }
-}
+def main():
 
-# Output the JSON response
-print(json.dumps(response))
+    try:
+        contentLength = int(sys.os.environ.get('CONTENT_LENGTH', 0))
+    except (TypeError, ValueError):
+        contentLength = 0
+
+    rawData = sys.stdin.read(contentLength) if contentLength > 0 else ''
+
+    try:
+        jsonData = json.loads(rawData)
+    except json.JSONDecodeError:
+        data = None
+
+    if jsonData["action"] == 'login':
+        
+
+
+
+
+    
+
