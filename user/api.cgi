@@ -10,7 +10,7 @@ import sys
 # password
 
 def main():
-
+    
     try:
         contentLength = int(sys.os.environ.get('CONTENT_LENGTH', 0))
     except (TypeError, ValueError):
