@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 
-load_dotenv()
+load_dotenv("~/.c/.env")
 
 dbcon = None
 
@@ -19,6 +19,10 @@ def initiateConnection():
         return 0
     except:
         return 1
+    
+def closeConnection():
+    global dbcon
+    dbcon.close()
 
-print("test")
 print(initiateConnection())
+closeConnection()
