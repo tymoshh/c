@@ -1,5 +1,3 @@
-import os
-import mysql.connector
-from mysql.connector import Error
+import MySQLdb
 
-print("TEST")
+print("test")
