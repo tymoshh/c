@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>konto</title>
+  <link rel="icon" href="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" type="image/png" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #e0d7f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+
+    .home-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    .home-button img {
+      width: 40px;
+      height: 40px;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .home-button img:hover {
+      opacity: 1;
+    }
+
+    .login-container {
+      background-color: #1a1a1a;
+      border: 2px solid #b92928;
+      border-radius: 10px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(185, 41, 40, 0.5);
+    }
+
+    .login-container h2 {
+      text-align: center;
+      color: #b92928;
+      margin-bottom: 1.5rem;
+      text-transform: lowercase;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #e0d7f4;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #333;
+      color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #b92928;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #a02020;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      color: #b92928;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="https://cebularz7.w.staszic.waw.pl/c" class="home-button">
+    <img src="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" alt="home" />
+  </a>
+
+  <div class="login-container">
+    <h2>logowanie</h2>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="username">nazwa użytkownika</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">hasło</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit">zaloguj się</button>
+    </form>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const messageDiv = document.getElementById('message');
+
+      try {
+        const response = await fetch('https://example.com/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          messageDiv.textContent = 'Zalogowano pomyślnie!';
+          messageDiv.style.color = 'lime';
+          // Optionally redirect or store token
+        } else {
+          messageDiv.textContent = result.message || 'Błąd logowania';
+        }
+      } catch (error) {
+        messageDiv.textContent = 'Błąd sieci lub serwera';
+      }
+    });
+  </script>
+
+</body>
+</html>
