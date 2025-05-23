@@ -17,3 +17,4 @@ def initiateConnection():
         return 1
 
 print("test")
+print(initiateConnection())
