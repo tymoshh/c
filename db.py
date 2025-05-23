@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 
-load_dotenv("~/.c/.env")
+load_dotenv("/home/k24_c/cebularz7/.c/.env")
 
 dbcon = None
 
