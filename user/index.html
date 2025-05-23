@@ -101,7 +101,7 @@
     <img src="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" alt="home" />
   </a>
 
-  <div class="login-container">
+  <div class="login-container" id="login-box">
     <h2>logowanie</h2>
     <form id="login-form">
       <div class="form-group">
@@ -117,7 +117,28 @@
     <div class="message" id="message"></div>
   </div>
 
+  <div class="message" id="already-logged-in" style="display: none; font-size: 1.2rem; color: lime;">
+    już jesteś zalogowany
+  </div>
+
   <script>
+    // Check if token cookie exists
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    const token = getCookie('token');
+    const loginBox = document.getElementById('login-box');
+    const alreadyLoggedInMessage = document.getElementById('already-logged-in');
+
+    if (token) {
+      loginBox.style.display = 'none';
+      alreadyLoggedInMessage.style.display = 'block';
+    }
+
+    // Handle login form submission
     document.getElementById('login-form').addEventListener('submit', async function (e) {
       e.preventDefault();
 
@@ -139,7 +160,13 @@
         if (response.ok) {
           messageDiv.textContent = 'Zalogowano pomyślnie!';
           messageDiv.style.color = 'lime';
-          // Optionally redirect or store token
+
+          // Set cookie (optional; normally set by server with Set-Cookie header)
+          document.cookie = `token=${result.token}; path=/; max-age=86400`;
+
+          // Hide form and show logged-in message
+          loginBox.style.display = 'none';
+          alreadyLoggedInMessage.style.display = 'block';
         } else {
           messageDiv.textContent = result.message || 'Błąd logowania';
         }
