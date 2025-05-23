@@ -102,23 +102,23 @@
   </a>
 
   <div class="login-container" id="login-box">
-    <h2>logowanie</h2>
+    <h2>staszic casino</h2>
     <form id="login-form">
       <div class="form-group">
-        <label for="username">nazwa użytkownika</label>
+        <label for="username">id</label>
         <input type="text" id="username" name="username" required />
       </div>
       <div class="form-group">
-        <label for="password">hasło</label>
+        <label for="password">haslo</label>
         <input type="password" id="password" name="password" required />
       </div>
-      <button type="submit">zaloguj się</button>
+      <button type="submit">zaloguj</button>
     </form>
     <div class="message" id="message"></div>
   </div>
 
   <div class="message" id="already-logged-in" style="display: none; font-size: 1.2rem; color: lime;">
-    już jesteś zalogowany
+    juz jestes zalogowany
   </div>
 
   <script>
@@ -158,7 +158,7 @@
         const result = await response.json();
 
         if (response.ok) {
-          messageDiv.textContent = 'Zalogowano pomyślnie!';
+          messageDiv.textContent = 'pomyslnie zalogowano';
           messageDiv.style.color = 'lime';
 
           // Set cookie (optional; normally set by server with Set-Cookie header)
@@ -168,10 +168,10 @@
           loginBox.style.display = 'none';
           alreadyLoggedInMessage.style.display = 'block';
         } else {
-          messageDiv.textContent = result.message || 'Błąd logowania';
+          messageDiv.textContent = result.message || 'blad logowania';
         }
       } catch (error) {
-        messageDiv.textContent = 'Błąd sieci lub serwera';
+        messageDiv.textContent = 'blad sieci lub serwera';
       }
     });
   </script>
