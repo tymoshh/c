@@ -1,3 +1,3 @@
-import MySQLdb
+import mysql.connector
 
 print("test")
