@@ -2,7 +2,7 @@
 
 import sys
 
-sys.path.append('/usr/local/lib/python3.x/dist-packages')
+sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
 
 import cgi
 
