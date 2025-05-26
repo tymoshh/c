@@ -11,6 +11,7 @@ print("Content-Type: text/plain\n")  # Set the content type to plain text
 for i in range(1, 11):
     print(i)
 
-print("testowy import")
-
-import testowyimport
+try:
+    import testowyimport
+except:
+    print("import sie wysypal")
