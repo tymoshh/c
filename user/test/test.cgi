@@ -14,6 +14,7 @@ for i in range(1, 11):
 try:
     import dbcon
     print("zadzialalo")
-    dbcon.getToken("test", "test")
+    print(dbcon.initiateConnection())
+    dbcon.closeConnection()
 except:
     print("import sie wysypal")
