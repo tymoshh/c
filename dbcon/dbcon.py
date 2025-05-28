@@ -30,8 +30,3 @@ def getHash(password):
 
 def getToken(username, passwordHash):
     print("TEST")
-
-print("zaimportowane")
-
-print(initiateConnection())
-closeConnection()

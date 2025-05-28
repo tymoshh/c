@@ -23,7 +23,9 @@ def main():
     except json.JSONDecodeError:
         data = None
 
+    import dbcon
     if jsonData["action"] == 'login':
+        dbcon.initiateConnection()
         
 
 

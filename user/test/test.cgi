@@ -12,7 +12,8 @@ for i in range(1, 11):
     print(i)
 
 try:
-    import testowyimport
+    import dbcon
     print("zadzialalo")
+    dbcon.getToken("test", "test")
 except:
     print("import sie wysypal")
