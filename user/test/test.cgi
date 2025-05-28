@@ -13,5 +13,6 @@ for i in range(1, 11):
 
 try:
     import testowyimport
+    print("zadzialalo")
 except:
     print("import sie wysypal")
