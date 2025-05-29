@@ -42,7 +42,7 @@ class userClass:
         initiateConnection()
         cursor = dbcon.cursor()
         query = """
-        INSERT INTO users (id, passwordHash, token)
+        INSERT INTO usertable (id, passwordHash, token)
         VALUES (%s, %s, %s)
         """
         values = (self.id, self.passwordHash, self.token)
