@@ -2,7 +2,8 @@ import os
 import hashlib
 from dotenv import load_dotenv
 import mysql.connector
-import random
+import secrets
+import string
 
 load_dotenv("/home/k24_c/cebularz7/.c/.env")
 
@@ -36,7 +37,7 @@ class userClass:
             return 1
 
     def createToken(self):
-        self.token = getHash(str(random.randint()))
+        self.token = getHash(generateRandomString(255))
 
     def createUser(self):
         initiateConnection()
@@ -69,4 +70,8 @@ def closeConnection():
 
 def getHash(mystring):
     return hashlib.sha256(mystring.encode()).hexdigest()
+
+def generateRandomString(length):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
 
