@@ -18,20 +18,20 @@ class userClass:
         print("ID : " + self.id)
         print("Password : " + self.password)
         print("Token : " + self.token)
-        print("PasswordHash : " + self.passwordHash)
+        print("Passwdhash : " + self.passwdhash)
     
-    def createPasswordHash(self):
-        self.passwordHash = getHash(self.password)
+    def createPasswdhash(self):
+        self.passwdhash = getHash(self.password)
 
     def fetchToken(self):
         initiateConnection()
         cursor = dbcon.cursor()
-        query = "SELECT passwordhash, token FROM usertable WHERE id = %s"
+        query = "SELECT passwdhash, token FROM usertable WHERE id = %s"
         cursor.execute(query, (sanitizeInput(self.id),))
         result = cursor.fetchone()
         if result:
-            stored_passwordhash, fetchedtoken = result
-            if stored_passwordhash == self.passwordHash:
+            stored_passwdhash, fetchedtoken = result
+            if stored_passwdhash == self.passwdhash:
                 closeConnection()
                 self.token = fetchedtoken
                 return 0
@@ -49,10 +49,10 @@ class userClass:
         initiateConnection()
         cursor = dbcon.cursor()
         query = """
-        INSERT INTO usertable (id, passwordHash, token)
+        INSERT INTO usertable (id, passwdhash, token)
         VALUES (%s, %s, %s)
         """
-        values = (sanitizeInput(self.id), sanitizeInput(self.passwordHash), sanitizeInput(self.token))
+        values = (sanitizeInput(self.id), sanitizeInput(self.passwdhash), sanitizeInput(self.token))
         dbcon.cursor().execute(query, values)
         dbcon.commit()
         closeConnection()
