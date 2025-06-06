@@ -9,11 +9,12 @@ PASSWD = input("Podaj haslo : ")
 
 userObject = dbcon.userClass(ID, PASSWD)
 
+userObject.createPasswordHash()
+userObject.createToken()
+
 print()
 userObject.checkInfo()
 
-userObject.createPasswordHash()
-userObject.createToken()
 userObject.createUser()
 
 print()
