@@ -20,7 +20,7 @@ class userClass:
         print("Token : " + self.token)
         print("Passwdhash : " + self.passwdhash)
     
-    def createPasswdhash(self):
+    def createPasswdHash(self):
         self.passwdhash = getHash(self.password)
 
     def fetchToken(self):
