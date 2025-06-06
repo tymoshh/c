@@ -66,7 +66,12 @@
       margin-top: 10px;
     }
 
-    .spin-button:hover {
+    .spin-button:disabled {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+
+    .spin-button:hover:enabled {
       background-color: #e03b3b;
     }
 
@@ -93,7 +98,7 @@
     <div class="reel" id="reel3">🍇</div>
   </div>
 
-  <button class="spin-button" onclick="spin()">Zakręć (10$)</button>
+  <button class="spin-button" id="spinButton" onclick="spin()">Zakręć (10$)</button>
   <div class="result" id="result"></div>
 
   <script>
@@ -110,32 +115,48 @@
     let balance = 1000;
 
     function spin() {
+      const button = document.getElementById('spinButton');
       if (balance < 10) {
         document.getElementById('result').textContent = "💸 Brak środków!";
         return;
       }
 
       balance -= 10;
-
-      const r1 = symbols[Math.floor(Math.random() * symbols.length)];
-      const r2 = symbols[Math.floor(Math.random() * symbols.length)];
-      const r3 = symbols[Math.floor(Math.random() * symbols.length)];
-
-      document.getElementById('reel1').textContent = r1;
-      document.getElementById('reel2').textContent = r2;
-      document.getElementById('reel3').textContent = r3;
-
-      let resultText = "😢 Spróbuj ponownie!";
-      if (r1 === r2 && r2 === r3) {
-        const win = payouts[r1];
-        balance += win;
-        resultText = `🎉 Jackpot! 3x ${r1} = +${win}$!`;
-      } else if (r1 === r2 || r2 === r3 || r1 === r3) {
-        resultText = "👌 Dwa takie same symbole (bez wygranej)";
-      }
-
-      document.getElementById('result').textContent = resultText;
       document.getElementById('balance').textContent = `Saldo: ${balance}$`;
+      document.getElementById('result').textContent = "🎰 Kręcimy...";
+      button.disabled = true;
+
+      let interval = setInterval(() => {
+        document.getElementById('reel1').textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        document.getElementById('reel2').textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        document.getElementById('reel3').textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(interval);
+
+        // Ostateczny wynik
+        const r1 = symbols[Math.floor(Math.random() * symbols.length)];
+        const r2 = symbols[Math.floor(Math.random() * symbols.length)];
+        const r3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+        document.getElementById('reel1').textContent = r1;
+        document.getElementById('reel2').textContent = r2;
+        document.getElementById('reel3').textContent = r3;
+
+        let resultText = "😢 Spróbuj ponownie!";
+        if (r1 === r2 && r2 === r3) {
+          const win = payouts[r1];
+          balance += win;
+          resultText = `🎉 Jackpot! 3x ${r1} = +${win}$!`;
+        } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+          resultText = "👌 Dwa takie same symbole (bez wygranej)";
+        }
+
+        document.getElementById('balance').textContent = `Saldo: ${balance}$`;
+        document.getElementById('result').textContent = resultText;
+        button.disabled = false;
+      }, 500); // animacja trwa 0.5 sekundy
     }
   </script>
 </body>
