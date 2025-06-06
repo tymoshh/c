@@ -1,1 +1,142 @@
-vhuj
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staszic Casino – Gra</title>
+  <link rel="icon" href="https://cebularz7.w.staszic.waw.pl/c/icon.png" type="image/png">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #e0d7f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    img.logo {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #b92928;
+      margin-bottom: 1rem;
+    }
+
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1c1c1c;
+      border: 4px solid #b92928;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .reel {
+      font-size: 3rem;
+      background-color: #000;
+      color: #fff;
+      border: 2px solid #444;
+      border-radius: 10px;
+      width: 80px;
+      height: 80px;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spin-button {
+      padding: 0.75rem 2rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 999px;
+      background-color: #b92928;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    .spin-button:hover {
+      background-color: #e03b3b;
+    }
+
+    .result, .balance {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      min-height: 1.5em;
+    }
+
+    .balance {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://cebularz7.w.staszic.waw.pl/c/icon.png" alt="site-logo" class="logo">
+  <h1>Staszic Casino</h1>
+
+  <div class="balance" id="balance">Saldo: 1000$</div>
+
+  <div class="slot-machine">
+    <div class="reel" id="reel1">🍒</div>
+    <div class="reel" id="reel2">🍋</div>
+    <div class="reel" id="reel3">🍇</div>
+  </div>
+
+  <button class="spin-button" onclick="spin()">Zakręć (10$)</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    const symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"];
+    const payouts = {
+      "🍒": 200,
+      "🍋": 300,
+      "🍇": 400,
+      "🍉": 500,
+      "🔔": 750,
+      "⭐": 1000,
+      "7️⃣": 2000
+    };
+    let balance = 1000;
+
+    function spin() {
+      if (balance < 10) {
+        document.getElementById('result').textContent = "💸 Brak środków!";
+        return;
+      }
+
+      balance -= 10;
+
+      const r1 = symbols[Math.floor(Math.random() * symbols.length)];
+      const r2 = symbols[Math.floor(Math.random() * symbols.length)];
+      const r3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+      document.getElementById('reel1').textContent = r1;
+      document.getElementById('reel2').textContent = r2;
+      document.getElementById('reel3').textContent = r3;
+
+      let resultText = "😢 Spróbuj ponownie!";
+      if (r1 === r2 && r2 === r3) {
+        const win = payouts[r1];
+        balance += win;
+        resultText = `🎉 Jackpot! 3x ${r1} = +${win}$!`;
+      } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+        resultText = "👌 Dwa takie same symbole (bez wygranej)";
+      }
+
+      document.getElementById('result').textContent = resultText;
+      document.getElementById('balance').textContent = `Saldo: ${balance}$`;
+    }
+  </script>
+</body>
+</html>
