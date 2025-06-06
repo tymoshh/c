@@ -13,6 +13,8 @@ userObject.createToken()
 userObject.createUser()
 
 print()
+userObject.checkInfo()
+print()
 print("Uzytkownik dodany!")
 print()
 input("Nacisnij enter, aby kontynuowac ...")

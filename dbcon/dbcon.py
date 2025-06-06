@@ -13,6 +13,12 @@ class userClass:
     def __init__(self, id, password):
         self.id = id
         self.password = password
+
+    def checkInfo(self):
+        print("ID : " + self.id)
+        print("Password : " + self.password)
+        print("Token : " + self.token)
+        print("PasswordHash : " + self.passwordHash)
     
     def createPasswordHash(self):
         self.passwordHash = getHash(self.password)
@@ -21,7 +27,7 @@ class userClass:
         initiateConnection()
         cursor = dbcon.cursor()
         query = "SELECT passwordhash, token FROM usertable WHERE id = %s"
-        cursor.execute(query, (self.id,))
+        cursor.execute(query, (sanitizeInput(self.id),))
         result = cursor.fetchone()
         if result:
             stored_passwordhash, fetchedtoken = result
@@ -46,10 +52,18 @@ class userClass:
         INSERT INTO usertable (id, passwordHash, token)
         VALUES (%s, %s, %s)
         """
-        values = (self.id, self.passwordHash, self.token)
+        values = (sanitizeInput(self.id), sanitizeInput(self.passwordHash), sanitizeInput(self.token))
         dbcon.cursor().execute(query, values)
         dbcon.commit()
         closeConnection()
+
+import re
+
+def sanitizeInput(inputStr):
+    inputStr = re.sub(r'\s+', '', inputStr)
+    inputStr = re.sub(r'[^a-zA-Z0-9_]', '', inputStr)
+    inputStr = inputStr[:255]
+    return inputStr
 
 def initiateConnection():
     try:
