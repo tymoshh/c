@@ -8,12 +8,14 @@ ID = input("Podaj ID : ")
 PASSWD = input("Podaj haslo : ")
 
 userObject = dbcon.userClass(ID, PASSWD)
+
+print()
+userObject.checkInfo()
+
 userObject.createPasswordHash()
 userObject.createToken()
 userObject.createUser()
 
-print()
-userObject.checkInfo()
 print()
 print("Uzytkownik dodany!")
 print()
