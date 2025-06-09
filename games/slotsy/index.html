@@ -1,48 +1,139 @@
-function spin() {
-  const button = document.getElementById('spinButton');
-  if (balance < 10) {
-    document.getElementById('result').textContent = "💸 Brak środków!";
-    return;
-  }
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staszic Casino – Gra</title>
+  <link rel="icon" href="https://cebularz7.w.staszic.waw.pl/c/icon.png" type="image/png" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #e0d7f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
 
-  balance -= 10;
-  document.getElementById('balance').textContent = `Saldo: ${balance}$`;
-  document.getElementById('result').textContent = "🎰 Kręcimy...";
-  button.disabled = true;
+    img.logo {
+      width: 80px;
+      margin-bottom: 10px;
+    }
 
-  // animacja lokalna przez 0.5s
-  let interval = setInterval(() => {
-    document.getElementById('reel1').textContent = getRandomSymbol();
-    document.getElementById('reel2').textContent = getRandomSymbol();
-    document.getElementById('reel3').textContent = getRandomSymbol();
-  }, 100);
+    h1 {
+      font-size: 3rem;
+      color: #b92928;
+      margin-bottom: 1rem;
+    }
 
-  setTimeout(() => {
-    clearInterval(interval);
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1c1c1c;
+      border: 4px solid #b92928;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+    }
 
-    // Pobierz prawdziwy wynik z CGI
-    fetch('/cgi-bin/game.cgi')
+    .reel {
+      font-size: 3rem;
+      background-color: #000;
+      color: #fff;
+      border: 2px solid #444;
+      border-radius: 10px;
+      width: 80px;
+      height: 80px;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spin-button {
+      padding: 0.75rem 2rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 999px;
+      background-color: #b92928;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    .spin-button:disabled {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+
+    .spin-button:hover:enabled {
+      background-color: #e03b3b;
+    }
+
+    .result, .balance {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      min-height: 1.5em;
+    }
+
+    .balance {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://cebularz7.w.staszic.waw.pl/c/icon.png" alt="site-logo" class="logo" />
+  <h1>Staszic Casino</h1>
+
+  <div class="balance" id="balance">Saldo: Wczytywanie...</div>
+
+  <div class="slot-machine">
+    <div class="reel" id="reel1">❓</div>
+    <div class="reel" id="reel2">❓</div>
+    <div class="reel" id="reel3">❓</div>
+  </div>
+
+  <button class="spin-button" id="spinButton" onclick="spin()">Zakręć (10$)</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    const button = document.getElementById('spinButton');
+
+    function spin() {
+      button.disabled = true;
+      document.getElementById('result').textContent = "🎰 Kręcimy...";
+
+      fetch("game.cgi", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('reel1').textContent = data.result[0];
+          document.getElementById('reel2').textContent = data.result[1];
+          document.getElementById('reel3').textContent = data.result[2];
+          document.getElementById('balance').textContent = `Saldo: ${data.balance}$`;
+          document.getElementById('result').textContent = data.message;
+          button.disabled = data.balance < 10;
+        })
+        .catch(() => {
+          document.getElementById('result').textContent = "❌ Błąd serwera.";
+          button.disabled = false;
+        });
+    }
+
+    // Inicjalizacja salda
+    fetch("game.cgi", { method: "GET" })
       .then(res => res.json())
       .then(data => {
-        const [r1, r2, r3] = data.result;
-        document.getElementById('reel1').textContent = r1;
-        document.getElementById('reel2').textContent = r2;
-        document.getElementById('reel3').textContent = r3;
-
-        balance += data.win;
-        document.getElementById('balance').textContent = `Saldo: ${balance}$`;
-        document.getElementById('result').textContent = data.message;
-        button.disabled = false;
+        document.getElementById('balance').textContent = `Saldo: ${data.balance}$`;
+        button.disabled = data.balance < 10;
       })
-      .catch(err => {
-        document.getElementById('result').textContent = "❌ Błąd połączenia z serwerem";
-        button.disabled = false;
+      .catch(() => {
+        document.getElementById('balance').textContent = "❌ Błąd ładowania salda";
       });
-
-  }, 500);
-}
-
-function getRandomSymbol() {
-  const symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"];
-  return symbols[Math.floor(Math.random() * symbols.length)];
-}
+  </script>
+</body>
+</html>

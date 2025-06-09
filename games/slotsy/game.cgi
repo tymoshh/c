@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
-
-import random
+import cgi
+import cgitb
 import json
+import random
+import os
+from http import cookies
+
+cgitb.enable()
 
 symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"]
 payouts = {
@@ -14,25 +19,66 @@ payouts = {
     "7️⃣": 2000
 }
 
-# Losuj 3 symbole
-r1 = random.choice(symbols)
-r2 = random.choice(symbols)
-r3 = random.choice(symbols)
-result = [r1, r2, r3]
+SPIN_COST = 10
+START_BALANCE = 1000
 
-# Oblicz wygraną
-win = 0
-message = "😢 Spróbuj ponownie!"
-if r1 == r2 == r3:
-    win = payouts[r1]
-    message = f"🎉 Jackpot! 3x {r1} = +{win}$!"
-elif r1 == r2 or r2 == r3 or r1 == r3:
-    message = "👌 Dwa takie same symbole (bez wygranej)"
+def load_balance():
+    cookie = cookies.SimpleCookie(os.environ.get("HTTP_COOKIE"))
+    try:
+        balance = int(cookie["balance"].value)
+    except (KeyError, ValueError):
+        balance = START_BALANCE
+    return balance, cookie
 
-# Zwróć dane JSON
-print("Content-Type: application/json\n")
-print(json.dumps({
-    "result": result,
-    "win": win,
-    "message": message
-}))
+def save_balance(balance, cookie):
+    cookie["balance"] = str(balance)
+    cookie["balance"]["path"] = "/"
+    print(cookie.output())
+
+def get_result():
+    return [random.choice(symbols) for _ in range(3)]
+
+def evaluate_spin(result):
+    if result[0] == result[1] == result[2]:
+        win = payouts.get(result[0], 0)
+        return win, f"🎉 Wygrałeś {win}$!"
+    return 0, "😢 Nic nie wygrałeś. Spróbuj ponownie!"
+
+def main():
+    print("Content-Type: application/json")
+    method = os.environ.get("REQUEST_METHOD", "GET")
+
+    balance, cookie = load_balance()
+
+    if method == "GET":
+        save_balance(balance, cookie)
+        print()
+        print(json.dumps({"balance": balance}))
+        return
+
+    if method == "POST":
+        if balance < SPIN_COST:
+            print()
+            print(json.dumps({
+                "result": ["❌", "❌", "❌"],
+                "win": 0,
+                "balance": balance,
+                "message": "💸 Brak środków!"
+            }))
+            return
+
+        balance -= SPIN_COST
+        result = get_result()
+        win, message = evaluate_spin(result)
+        balance += win
+
+        save_balance(balance, cookie)
+        print()
+        print(json.dumps({
+            "result": result,
+            "win": win,
+            "balance": balance,
+            "message": message
+        }))
+
+main()
