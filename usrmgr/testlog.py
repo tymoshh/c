@@ -8,6 +8,7 @@ ID = input("Podaj ID : ")
 PASSWD = input("Podaj haslo : ")
 
 userObject = dbcon.userClass(ID, PASSWD)
+userObject.createPasswdHash()
 
 userObject.fetchToken()
 userObject.viewToken()
