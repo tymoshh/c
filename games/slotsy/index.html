@@ -115,49 +115,54 @@
     let balance = 1000;
 
     function spin() {
-      const button = document.getElementById('spinButton');
-      if (balance < 10) {
-        document.getElementById('result').textContent = "💸 Brak środków!";
-        return;
-      }
+  const button = document.getElementById('spinButton');
+  if (balance < 10) {
+    document.getElementById('result').textContent = "💸 Brak środków!";
+    return;
+  }
 
-      balance -= 10;
-      document.getElementById('balance').textContent = `Saldo: ${balance}$`;
-      document.getElementById('result').textContent = "🎰 Kręcimy...";
-      button.disabled = true;
+  balance -= 10;
+  document.getElementById('balance').textContent = `Saldo: ${balance}$`;
+  document.getElementById('result').textContent = "🎰 Kręcimy...";
+  button.disabled = true;
 
-      let interval = setInterval(() => {
-        document.getElementById('reel1').textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        document.getElementById('reel2').textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        document.getElementById('reel3').textContent = symbols[Math.floor(Math.random() * symbols.length)];
-      }, 100);
+  // animacja lokalna przez 0.5s
+  let interval = setInterval(() => {
+    document.getElementById('reel1').textContent = getRandomSymbol();
+    document.getElementById('reel2').textContent = getRandomSymbol();
+    document.getElementById('reel3').textContent = getRandomSymbol();
+  }, 100);
 
-      setTimeout(() => {
-        clearInterval(interval);
+  setTimeout(() => {
+    clearInterval(interval);
 
-        // Ostateczny wynik
-        const r1 = symbols[Math.floor(Math.random() * symbols.length)];
-        const r2 = symbols[Math.floor(Math.random() * symbols.length)];
-        const r3 = symbols[Math.floor(Math.random() * symbols.length)];
-
+    // Pobierz prawdziwy wynik z CGI
+    fetch('/cgi-bin/game.cgi')
+      .then(res => res.json())
+      .then(data => {
+        const [r1, r2, r3] = data.result;
         document.getElementById('reel1').textContent = r1;
         document.getElementById('reel2').textContent = r2;
         document.getElementById('reel3').textContent = r3;
 
-        let resultText = "😢 Spróbuj ponownie!";
-        if (r1 === r2 && r2 === r3) {
-          const win = payouts[r1];
-          balance += win;
-          resultText = `🎉 Jackpot! 3x ${r1} = +${win}$!`;
-        } else if (r1 === r2 || r2 === r3 || r1 === r3) {
-          resultText = "👌 Dwa takie same symbole (bez wygranej)";
-        }
-
+        balance += data.win;
         document.getElementById('balance').textContent = `Saldo: ${balance}$`;
-        document.getElementById('result').textContent = resultText;
+        document.getElementById('result').textContent = data.message;
         button.disabled = false;
-      }, 500); // animacja trwa 0.5 sekundy
-    }
+      })
+      .catch(err => {
+        document.getElementById('result').textContent = "❌ Błąd połączenia z serwerem";
+        button.disabled = false;
+      });
+
+  }, 500);
+}
+
+function getRandomSymbol() {
+  const symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"];
+  return symbols[Math.floor(Math.random() * symbols.length)];
+}
+
   </script>
 </body>
 </html>
