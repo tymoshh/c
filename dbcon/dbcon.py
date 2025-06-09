@@ -25,6 +25,7 @@ class userClass:
 
     def fetchToken(self):
         initiateConnection()
+        self.createPasswdHash()
         cursor = dbcon.cursor()
         query = "SELECT passwdhash, token FROM usertable WHERE id = %s"
         cursor.execute(query, (sanitizeInput(self.id),))
