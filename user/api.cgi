@@ -30,6 +30,8 @@ def main():
         userObject.fetchToken()
         tokenVar = userObject.viewToken()
         print(json.dumps({"token": tokenVar}))
+
+main()
         
         
 
