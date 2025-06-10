@@ -4,10 +4,7 @@ import cgi
 import json
 import sys
 
-# json
-# action
-# username
-# password
+sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
 
 def main():
     
