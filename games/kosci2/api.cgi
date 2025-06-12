@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-print("Content-Type: application/json\n")
+print("Content-Type: plain/text\n")
 
 import os
 import cgi
@@ -21,29 +21,38 @@ except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
-if jsonData.get("action") == 'roll':
-    try:
-        betValue = int(jsonData["betvalue"])
-    except (ValueError, TypeError):
-        print(json.dumps({"error": "Invalid bet value"}))
-        sys.exit(1)
+for element in jsonData:
+    print(element)
 
+'''
+import dbcon
+if jsonData["action"] == 'bet':
+    # create user object
+    userObject = dbcon.userClass(None, None)
+    userObject.setToken(jsonData["token"])
+    # get bet value
+    betValue = jsonData["betvalue"]
+    # remove bet value
+    userObject.updateBalance(-betValue)
+    userObject.updatePlayedgames()
+    # choose symbols
     dice1 = random.randint(1, 6)
     dice2 = random.randint(1, 6)
     total = dice1 + dice2
-
+    #game logic
     if 2 <= total <= 6:
         winValue = betValue
     elif 8 <= total <= 12:
         winValue = betValue * 2
     else:
         winValue = 0
-
+    #add win value
+    if winValue > 0:
+        userObject.updateBalance(winValue)
+    #return data as json
     print(json.dumps({
-        "dice1": dice1,
-        "dice2": dice2,
-        "total": total,
-        "winvalue": winValue
+       "winvalue": winValue,
+       "dice1": dice1,
+       "dice2": dice2
     }))
-else:
-    print(json.dumps({"error": "Invalid action"}))
+'''
