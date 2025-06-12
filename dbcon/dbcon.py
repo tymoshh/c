@@ -45,6 +45,9 @@ class userClass:
     def viewToken(self):
         print("Token : " + self.token)
 
+    def getToken(self):
+        return self.token
+
     def createToken(self):
         self.token = getHash(generateRandomString(255))
 
