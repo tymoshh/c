@@ -26,4 +26,4 @@ if jsonData["action"] == 'login':
         userObject.createPasswdHash()
         userObject.fetchToken()
         tokenVar = userObject.getToken()
-        json.dumps({"token": tokenVar})
+        print(json.dumps({"token": tokenVar}))
