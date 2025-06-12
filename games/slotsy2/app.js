@@ -23,7 +23,11 @@ function spin() {
   const token = getCookie("token");
 
   if (!token) {
-    alert("Musisz sie zalogowac");
+    Swal.fire({
+      icon: "error",
+      title: "Nie jestes zalogowany!",
+      confirmButtonText: "OK"
+    });
     return;
   }
 
@@ -39,7 +43,7 @@ function spin() {
     document.getElementById("symbol3")
   ];
 
-  const keys = Object.keys(slotMap); // ["Seven", "Bell", "Grape", "Cherry", "Lemon"]
+  const keys = Object.keys(slotMap);
 
   // Start fake spinning animation
   const intervalId = setInterval(() => {
@@ -49,7 +53,6 @@ function spin() {
     });
   }, 100);
 
-  // Start request immediately
   let result = null;
   let requestFailed = false;
 
@@ -69,18 +72,37 @@ function spin() {
       requestFailed = true;
     });
 
-  // Stop animation after 1.5 seconds and show result
   setTimeout(() => {
     clearInterval(intervalId);
 
     if (requestFailed || !result) {
-      document.getElementById("win").textContent = "Cos sie wysypalo";
+      Swal.fire({
+        icon: "error",
+        title: "Cos sie wysypało!",
+        confirmButtonText: "Sprobuj ponownie"
+      });
       return;
     }
 
     symbolElements[0].textContent = getSymbol(result.symbol1);
     symbolElements[1].textContent = getSymbol(result.symbol2);
     symbolElements[2].textContent = getSymbol(result.symbol3);
-    document.getElementById("win").textContent = `Wygrana ${Number(result.winvalue)}$`;
-  }, 800);
+
+    const winAmount = Number(result.winvalue);
+    if (winAmount > 0) {
+      Swal.fire({
+        icon: "success",
+        title: `Wygrales ${winAmount}$!`,
+        showConfirmButton: true,
+        confirmButtonText: "Super!"
+      });
+    } else {
+      Swal.fire({
+        icon: "info",
+        title: "Sprobuj jeszcze raz!",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+  }, 1500);
 }
