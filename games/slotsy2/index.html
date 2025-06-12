@@ -34,31 +34,25 @@
       opacity: 1;
     }
 
-    .login-container {
+    .slot-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 2rem;
       background-color: #1a1a1a;
       border: 2px solid #b92928;
       border-radius: 10px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 400px;
       box-shadow: 0 0 10px rgba(185, 41, 40, 0.5);
+      font-size: 48px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .win-box {
+      margin-top: 20px;
       text-align: center;
-    }
-
-    .login-container h2 {
-      color: #b92928;
-      margin-bottom: 1.5rem;
-      text-transform: lowercase;
-    }
-
-    .symbols {
-      font-size: 2rem;
-      margin: 1rem 0;
-    }
-
-    .win {
-      color: #b92928;
       font-size: 1.5rem;
+      color: #b92928;
     }
 
     button {
@@ -85,8 +79,12 @@
 
   <div class="login-container">
     <h2>Slots Game</h2>
-    <div class="symbols" id="symbols">🎰🎰🎰</div>
-    <div class="win" id="win">Press spin!</div>
+    <div class="slot-box">
+      <div id="symbol1">?</div>
+      <div id="symbol2">?</div>
+      <div id="symbol3">?</div>
+    </div>
+    <div class="win-box" id="win">Press spin!</div>
     <button onclick="spin()">Spin</button>
   </div>
 
