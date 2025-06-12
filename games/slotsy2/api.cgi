@@ -25,5 +25,10 @@ except json.JSONDecodeError:
 
 import dbcon
 if jsonData["action"] == 'bet':
-    print("betujemy")
+    # create user object
+    userObject = dbcon.userClass(None, None)
+    userObject.setToken(jsonData["token"])
+    # check token
+    userObject.viewToken()
+    
 
