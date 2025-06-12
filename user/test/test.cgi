@@ -1,20 +1,30 @@
 #!/usr/bin/env python3
 
+print("Content-Type: text/plain\n")  # Set the content type to plain text
+
+import os
+import cgi
+import json
 import sys
 
 sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
 
-import cgi
-
-print("Content-Type: text/plain\n")  # Set the content type to plain text
-
-for i in range(1, 11):
-    print(i)
-
 try:
-    import dbcon
-    print("zadzialalo")
-    print(dbcon.initiateConnection())
-    dbcon.closeConnection()
-except:
-    print("import sie wysypal")
+    contentLength = int(os.environ.get('CONTENT_LENGTH', 0))
+except (TypeError, ValueError):
+    contentLength = 0
+rawData = sys.stdin.read(contentLength) if contentLength > 0 else ''
+try:
+    jsonData = json.loads(rawData)
+except json.JSONDecodeError:
+    print(json.dumps({"error": "Invalid JSON"}))
+    sys.exit(1)
+
+import dbcon
+if jsonData["action"] == 'login':
+        userObject = dbcon.userClass(jsonData["username"], jsonData["password"])
+        userObject.createPasswdHash()
+        userObject.fetchToken()
+        tokenVar = userObject.viewToken()
+        print(tokenVar)
+
