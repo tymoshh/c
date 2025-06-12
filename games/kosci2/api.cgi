@@ -10,7 +10,7 @@ import random
 
 sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
 
-print("abc")
+print("test")
 
 '''
 try:
