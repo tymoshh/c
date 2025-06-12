@@ -10,6 +10,9 @@ import random
 
 sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
 
+print("abc")
+
+'''
 try:
     contentLength = int(os.environ.get('CONTENT_LENGTH', 0))
 except (TypeError, ValueError):
@@ -21,10 +24,6 @@ except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
-for element in jsonData:
-    print(element)
-
-'''
 import dbcon
 if jsonData["action"] == 'bet':
     # create user object
