@@ -1,6 +1,6 @@
 // Symbol map with emojis
 const slotMap = {
-  1: "🍒", // Cherry
+  1: "🍒", // 7
   2: "🔔", // Bell
   3: "🍇", // Grape
   4: "🍒", // Cherry
@@ -34,10 +34,7 @@ function spin() {
     document.getElementById("symbol2"),
     document.getElementById("symbol3")
   ];
-
-  // Disable the spin button to prevent multiple spins
-  document.getElementById("spinButton").disabled = true;
-
+  
   // Start animating symbols
   let intervalId = setInterval(() => {
     symbolElements.forEach(el => {
@@ -67,31 +64,10 @@ function spin() {
 
     // Show the win amount
     document.getElementById("win").textContent = `${Number(data.winvalue)}$`;
-
-    // Re-enable the spin button to allow another spin
-    document.getElementById("spinButton").disabled = false;
   })
   .catch(err => {
     console.error("Error:", err);
     clearInterval(intervalId);
     document.getElementById("win").textContent = "Coś się wysypało!";
-
-    // Re-enable the spin button in case of error
-    document.getElementById("spinButton").disabled = false;
   });
-}
-
-// You can add a reset function if needed to clear the symbols
-function resetSlot() {
-  const symbolElements = [
-    document.getElementById("symbol1"),
-    document.getElementById("symbol2"),
-    document.getElementById("symbol3")
-  ];
-
-  // Reset the symbols to a default state (e.g., empty or initial symbols)
-  symbolElements.forEach(el => el.textContent = "🔲"); // Empty block for reset
-
-  // Reset the win value
-  document.getElementById("win").textContent = "";
 }
