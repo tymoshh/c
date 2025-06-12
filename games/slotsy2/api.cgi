@@ -23,6 +23,14 @@ except json.JSONDecodeError:
     print("invalid json")
     sys.exit(1)
 
+slotMap = {
+    1: "7",
+    2: "Bell",
+    3: "Grape",
+    4: "Cherry",
+    6: "Lemon"
+}
+
 import dbcon
 if jsonData["action"] == 'bet':
     # create user object
