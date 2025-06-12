@@ -28,7 +28,8 @@ if jsonData["action"] == 'bet':
     # create user object
     userObject = dbcon.userClass(None, None)
     userObject.setToken(jsonData["token"])
-    # check token
-    userObject.viewToken()
-    
+    # get bet value
+    betValue = jsonData["betvalue"]
+    print(betValue * 3)
+
 
