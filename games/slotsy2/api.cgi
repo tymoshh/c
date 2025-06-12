@@ -44,4 +44,5 @@ if jsonData["action"] == 'bet':
     symbol1 = random.choice(list(slotMap.values()))
     symbol2 = random.choice(list(slotMap.values()))
     symbol3 = random.choice(list(slotMap.values()))
+    print(symbol1, symbol2, symbol3)
 
