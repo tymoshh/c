@@ -38,16 +38,16 @@ if jsonData["action"] == 'bet':
     total = dice1 + dice2
     #game logic
     if 2 <= total <= 6:
-        winValue = 50
+        winValue = betValue
     elif 8 <= total <= 12:
-        winValue = 75
+        winValue = betValue * 2
     else:
         winValue = 0
     #add win value
     if winValue > 0:
         userObject.updateBalance(winValue)
     #return data as json
-        print(json.dumps({
+    print(json.dumps({
        "winvalue": winValue,
        "dice1": dice1,
        "dice2": dice2
