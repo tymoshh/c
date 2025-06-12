@@ -57,6 +57,9 @@ if jsonData["action"] == 'bet':
         winValue = betValue * 2
     else:
         winValue = 0
+    # add win value
+    if winValue > 0:
+        userObject.updateBalance(winValue)
     # debug data
     print("symbol1: " + symbol1)
     print("symbol2: " + symbol2)
