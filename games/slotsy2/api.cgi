@@ -22,7 +22,7 @@ except json.JSONDecodeError:
     sys.exit(1)
 
 slotMap = {
-    1: "7",
+    1: "Seven",
     2: "Bell",
     3: "Grape",
     4: "Cherry",
@@ -45,7 +45,7 @@ if jsonData["action"] == 'bet':
     symbol3 = random.choice(list(slotMap.values()))
     # game logic
     if symbol1 == symbol2 == symbol3:
-        if symbol1 == "7":
+        if symbol1 == "Seven":
             winValue = betValue * 100
         elif symbol1 == "Bell":
             winValue = betValue * 10
