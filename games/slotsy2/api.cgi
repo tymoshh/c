@@ -17,8 +17,6 @@ except (TypeError, ValueError):
 rawData = sys.stdin.read(contentLength) if contentLength > 0 else ''
 try:
     jsonData = json.loads(rawData)
-    for element in jsonData:
-        print(element)
 except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
