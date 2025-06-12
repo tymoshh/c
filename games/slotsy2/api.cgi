@@ -17,7 +17,12 @@ except (TypeError, ValueError):
 rawData = sys.stdin.read(contentLength) if contentLength > 0 else ''
 try:
     jsonData = json.loads(rawData)
+    for element in jsonData:
+        print(element)
 except json.JSONDecodeError:
     print("invalid json")
     sys.exit(1)
+
+import dbcon
+print("dbcon")
 
