@@ -1,24 +1,10 @@
 #!/usr/bin/env python3
 import cgi
-import cgitb
 import json
-import os
-import http.cookies as Cookie
+import random
 
-cgitb.enable()
+print("Content-Type: application/json\n")
 
-print("Content-Type: application/json")
-
-# Użycie ciasteczka do przechowywania salda
-cookie = Cookie.SimpleCookie(os.environ.get("HTTP_COOKIE"))
-balance = 1000
-if "balance" in cookie:
-    try:
-        balance = int(cookie["balance"].value)
-    except:
-        balance = 1000
-
-cost = 10
 symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"]
 payouts = {
     "🍒": 200,
@@ -30,38 +16,31 @@ payouts = {
     "7️⃣": 2000
 }
 
-if balance < cost:
-    print()
-    print(json.dumps({
-        "result": ["❌", "❌", "❌"],
-        "win": 0,
-        "balance": balance,
-        "message": "Brak środków na zakręcenie"
-    }))
-    exit()
+# koszt zakręcenia
+cost = 10
+start_balance = 1000
 
-import random
+# wczytanie danych z przeglądarki (ale my nie używamy żadnych danych wejściowych)
+form = cgi.FieldStorage()
 
-balance -= cost
+# losujemy 3 symbole
 result = [random.choice(symbols) for _ in range(3)]
+win = 0
+message = "❌ Spróbuj ponownie!"
 
+# jeśli wszystkie 3 takie same – wygrana
 if result[0] == result[1] == result[2]:
     win = payouts[result[0]]
-else:
-    win = 0
+    message = "🎉 Gratulacje! Wygrałeś!"
 
-balance += win
+# saldo po jednej turze (klient odliczył już 10$ lokalnie)
+balance = start_balance - cost + win
 
-# Ustaw nowe ciasteczko
-new_cookie = Cookie.SimpleCookie()
-new_cookie["balance"] = str(balance)
-new_cookie["balance"]["path"] = "/"
-print(new_cookie.output())
-
-print()
-print(json.dumps({
+response = {
     "result": result,
     "win": win,
-    "balance": balance,
-    "message": f"Gratulacje! Wygrałeś {win}$!" if win > 0 else "Niestety, brak wygranej"
-}))
+    "message": message,
+    "balance": balance
+}
+
+print(json.dumps(response))
