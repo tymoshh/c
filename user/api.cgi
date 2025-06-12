@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-print("Content-Type: application/json\n")  # Set the content type to plain text
+print("Content-Type: application/json\n")
 
 import os
 import cgi
