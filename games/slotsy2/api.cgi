@@ -30,6 +30,7 @@ if jsonData["action"] == 'bet':
     userObject.setToken(jsonData["token"])
     # get bet value
     betValue = jsonData["betvalue"]
-    print(betValue * 3)
+    # remove bet value
+    userObject.updateBalance(-betValue)
 
 
