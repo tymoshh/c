@@ -84,7 +84,7 @@ class userClass:
         values = (balanceModifier, sanitizeInput(self.token))
         dbcon.cursor().execute(query, values)
         # add to moneyspent
-        if balanceModifier > 0:
+        if balanceModifier < 0:
             query = "UPDATE usertable SET moneyspent = moneyspent + %s WHERE token = %s"
             values = (balanceModifier, sanitizeInput(self.token))
             dbcon.cursor().execute(query, values)
