@@ -20,4 +20,6 @@ except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
-json.dumps(jsonData)
+print(jsonData["action"])
+print(jsonData["username"])
+print(jsonData["password"])
