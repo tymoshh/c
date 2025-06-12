@@ -40,9 +40,27 @@ if jsonData["action"] == 'bet':
     betValue = jsonData["betvalue"]
     # remove bet value
     userObject.updateBalance(-betValue)
+    userObject.updatePlayedgames()
     # choose symbols
     symbol1 = random.choice(list(slotMap.values()))
     symbol2 = random.choice(list(slotMap.values()))
     symbol3 = random.choice(list(slotMap.values()))
-    print(symbol1, symbol2, symbol3)
+    # game logic
+    if symbol1 == symbol2 == symbol3:
+        if symbol1 == "7":
+            winValue = betValue * 100
+        elif symbol1 == "Bell":
+            winValue = betValue * 10
+        else:
+            winValue = betValue * 5
+    elif symbol1 == symbol2 or symbol1 == symbol3 or symbol2 == symbol3:
+        winValue = betValue * 2
+    else:
+        winValue = 0
+    # debug data
+    print("symbol1: " + symbol1)
+    print("symbol2: " + symbol2)
+    print("symbol3: " + symbol3)
+    print("winValue: " + str(winValue))
+    
 
