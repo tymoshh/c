@@ -29,11 +29,11 @@ function getCookie(name) {
       document.getElementById("symbols").textContent =
         `${data.symbol1} | ${data.symbol2} | ${data.symbol3}`;
       document.getElementById("win").textContent =
-        `You won: ${data.winvalue}`;
+        `Wygrales: ${Number(data.winvalue)}`;
     })
     .catch(err => {
       console.error("Error:", err);
-      document.getElementById("win").textContent = "An error occurred.";
+      document.getElementById("win").textContent = "Cos sie wysypalo";
     });
   }
   
