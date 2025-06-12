@@ -40,5 +40,8 @@ if jsonData["action"] == 'bet':
     betValue = jsonData["betvalue"]
     # remove bet value
     userObject.updateBalance(-betValue)
-
+    # choose symbols
+    symbol1 = random.choice(list(slotMap.values()))
+    symbol2 = random.choice(list(slotMap.values()))
+    symbol3 = random.choice(list(slotMap.values()))
 
