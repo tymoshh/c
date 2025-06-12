@@ -10,6 +10,10 @@ import random
 
 sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
 
+print("abc")
+
+sys.exit(0)
+
 try:
     contentLength = int(os.environ.get('CONTENT_LENGTH', 0))
 except (TypeError, ValueError):
@@ -22,8 +26,6 @@ except json.JSONDecodeError:
     sys.exit(1)
 
 print(str(jsonData["token"]) + " betuje sobie za " + str(jsonData["betvalue"]))
-
-sys.exit(0)
 
 slotMap = {
     1: "7",
