@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-print("Content-Type: application/json\n")
+print("Content-Type: plain/text\n")
 
 import os
 import cgi
@@ -21,7 +21,10 @@ except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
+for element in jsonData:
+    print(element)
 
+'''
 import dbcon
 if jsonData["action"] == 'bet':
     # create user object
@@ -52,3 +55,4 @@ if jsonData["action"] == 'bet':
        "dice1": dice1,
        "dice2": dice2
     }))
+'''
