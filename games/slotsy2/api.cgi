@@ -32,7 +32,7 @@ slotMap = {
 import dbcon
 if jsonData["action"] == 'bet':
     # create user object
-    userObject = userClass(None, None)
+    userObject = dbcon.userClass(None, None)
     userObject.setToken(jsonData["token"])
     # get bet amount
     betValue = int(jsonData["betvalue"])
@@ -59,9 +59,9 @@ if jsonData["action"] == 'bet':
     # return json
     print(json.dumps(
         {
-            "win": winValue
-            "symbol1": symbol1
-            "symbol2": symbol2
+            "win": winValue,
+            "symbol1": symbol1,
+            "symbol2": symbol2,
             "symbol3": symbol3
         }
     ))

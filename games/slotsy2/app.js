@@ -7,7 +7,7 @@ function getCookie(name) {
     const token = getCookie("token");
   
     if (!token) {
-      alert("No token found in cookies.");
+      alert("nie jestes zalogowany");
       return;
     }
   
