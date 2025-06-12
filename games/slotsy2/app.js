@@ -23,7 +23,7 @@ function spin() {
   const token = getCookie("token");
 
   if (!token) {
-    alert("Nie jesteś zalogowany!");
+    alert("Musisz sie zalogowac");
     return;
   }
 
@@ -74,13 +74,13 @@ function spin() {
     clearInterval(intervalId);
 
     if (requestFailed || !result) {
-      document.getElementById("win").textContent = "Coś się wysypało!";
+      document.getElementById("win").textContent = "Cos sie wysypalo";
       return;
     }
 
     symbolElements[0].textContent = getSymbol(result.symbol1);
     symbolElements[1].textContent = getSymbol(result.symbol2);
     symbolElements[2].textContent = getSymbol(result.symbol3);
-    document.getElementById("win").textContent = `${Number(result.winvalue)}$`;
+    document.getElementById("win").textContent = `Wygrana ${Number(result.winvalue)}$`;
   }, 1500);
 }
