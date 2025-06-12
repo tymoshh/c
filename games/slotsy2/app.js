@@ -110,13 +110,6 @@ function spin() {
         showConfirmButton: true,
         confirmButtonText: "Super!"
       });
-    } else {
-      Swal.fire({
-        icon: "info",
-        title: "Sprobuj jeszcze raz!",
-        showConfirmButton: false,
-        timer: 800
-      });
     }
   }, 800);
 }
