@@ -20,6 +20,8 @@ except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
+import dbcon
+
 print(jsonData["action"])
 print(jsonData["username"])
 print(jsonData["password"])
