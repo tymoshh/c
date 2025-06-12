@@ -241,7 +241,12 @@
       setTimeout(() => {
         clearInterval(interval);
 
-        fetch("game.php", { method: "POST" })
+        fetch("/cgi-bin/game.cgi", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
           .then((res) => res.json())
           .then((data) => {
             document.getElementById("reel1").textContent = data.result[0];
@@ -259,7 +264,8 @@
             }
             button.disabled = false;
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error("Błąd:", error);
             resultEl.textContent = "❌ Błąd połączenia z serwerem";
             button.disabled = false;
           });

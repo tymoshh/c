@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staszic Casino – Koło Fortuny</title>
+  <link rel="icon" href="https://cebularz7.w.staszic.waw.pl/c/icon.png" type="image/png" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #e0d7f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #b92928;
+      margin-bottom: 1rem;
+    }
+
+    .balance {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .wheel {
+      font-size: 4rem;
+      border: 5px solid #b92928;
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      background-color: #1c1c1c;
+    }
+
+    .buttons {
+      margin: 15px 0;
+    }
+
+    .buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #b92928;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .buttons button:disabled {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+
+    .result {
+      font-size: 1.5rem;
+      margin-top: 15px;
+      min-height: 2em;
+    }
+
+    .big-win {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      color: gold;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 20px;
+      display: none;
+      z-index: 999;
+      animation: fadein 0.3s;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(1080deg); }
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Koło Fortuny</h1>
+  <div class="balance" id="balance">Saldo: 1000$</div>
+
+  <div class="wheel" id="wheel">❓</div>
+
+  <div class="buttons">
+    <button onclick="spin(10)">10$</button>
+    <button onclick="spin(100)">100$</button>
+    <button onclick="spin(200)">200$</button>
+    <button onclick="spin(500)">500$</button>
+    <button onclick="spin(1000)">1000$</button>
+    <button onclick="spin(2000)">2000$</button>
+    <button onclick="spin(5000)">5000$</button>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <div class="big-win" id="bigWin"></div>
+
+  <script>
+    const balanceDisplay = document.getElementById("balance");
+    const resultDisplay = document.getElementById("result");
+    const wheel = document.getElementById("wheel");
+    const bigWin = document.getElementById("bigWin");
+    const buttons = document.querySelectorAll(".buttons button");
+    const symbols = ["0", "x1.5", "x2", "x2.5", "x3", "x5", "JACKPOT"];
+
+    function spin(bet) {
+      disableButtons(true);
+      resultDisplay.textContent = "🎡 Kręcimy kołem...";
+      let spinCount = 0;
+
+      const spinInterval = setInterval(() => {
+        wheel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        spinCount++;
+        if (spinCount > 7) {
+          clearInterval(spinInterval);
+
+          fetch(`wheel.php?bet=${bet}`)
+            .then(res => res.json())
+            .then(data => {
+              wheel.textContent = data.result;
+              balanceDisplay.textContent = `Saldo: ${data.balance}$`;
+              resultDisplay.textContent = data.message;
+
+              if (data.result !== "0") {
+                bigWin.textContent = data.message;
+                bigWin.style.display = "block";
+                setTimeout(() => {
+                  bigWin.style.display = "none";
+                }, 2000);
+              }
+
+              disableButtons(false);
+            })
+            .catch(() => {
+              resultDisplay.textContent = "❌ Błąd połączenia z serwerem";
+              disableButtons(false);
+            });
+        }
+      }, 100);
+    }
+
+    function disableButtons(disabled) {
+      buttons.forEach(btn => btn.disabled = disabled);
+    }
+  </script>
+
+</body>
+</html>
