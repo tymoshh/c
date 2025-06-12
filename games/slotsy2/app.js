@@ -18,10 +18,23 @@ function getCookie(name) {
   return match ? match[2] : null;
 }
 
-// Main slot spin function
+// Main slot spin function with 850ms cooldown on the button with id "zakrec"
 function spin() {
-  const token = getCookie("token");
+  const spinButton = document.getElementById("zakrec");
+  if (!spinButton) {
+    console.error("Spin button with id 'zakrec' not found");
+    return;
+  }
 
+  // Disable button immediately to prevent spamming
+  spinButton.disabled = true;
+
+  // Re-enable after cooldown
+  setTimeout(() => {
+    spinButton.disabled = false;
+  }, 850);
+
+  const token = getCookie("token");
   if (!token) {
     Swal.fire({
       icon: "error",
@@ -45,7 +58,7 @@ function spin() {
 
   const keys = Object.keys(slotMap);
 
-  // Start fake spinning animation
+  // Start spinning animation (random emojis)
   const intervalId = setInterval(() => {
     symbolElements.forEach(el => {
       const randomKey = keys[Math.floor(Math.random() * keys.length)];
@@ -72,6 +85,7 @@ function spin() {
       requestFailed = true;
     });
 
+  // After 800ms, stop animation and show results
   setTimeout(() => {
     clearInterval(intervalId);
 
@@ -101,8 +115,8 @@ function spin() {
         icon: "info",
         title: "Sprobuj jeszcze raz!",
         showConfirmButton: false,
-        timer: 1500
+        timer: 800
       });
     }
-  }, 1500);
+  }, 800);
 }
