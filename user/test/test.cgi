@@ -21,7 +21,10 @@ except json.JSONDecodeError:
     sys.exit(1)
 
 import dbcon
+if jsonData["action"] == 'login':
+        userObject = dbcon.userClass(jsonData["username"], jsonData["password"])
+        userObject.createPasswdHash()
+        userObject.fetchToken()
+        tokenVar = userObject.viewToken()
+        print(tokenVar)
 
-print(jsonData["action"])
-print(jsonData["username"])
-print(jsonData["password"])
