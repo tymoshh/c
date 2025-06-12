@@ -82,5 +82,5 @@ function spin() {
     symbolElements[1].textContent = getSymbol(result.symbol2);
     symbolElements[2].textContent = getSymbol(result.symbol3);
     document.getElementById("win").textContent = `Wygrana ${Number(result.winvalue)}$`;
-  }, 1500);
+  }, 800);
 }
