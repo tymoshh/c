@@ -241,7 +241,7 @@
       setTimeout(() => {
         clearInterval(interval);
 
-        fetch("game.php", { method: "POST" })
+        fetch("/cgi-bin/game.cgi", { method: "POST" })
           .then((res) => res.json())
           .then((data) => {
             document.getElementById("reel1").textContent = data.result[0];
