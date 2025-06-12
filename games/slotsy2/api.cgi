@@ -21,6 +21,10 @@ except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
+print(str(jsonData["token"]) + " betuje sobie za " + str(jsonData["betvalue"]))
+
+sys.exit(0)
+
 slotMap = {
     1: "7",
     2: "Bell",
@@ -29,42 +33,39 @@ slotMap = {
     6: "Lemon"
 }
 
-try:
-    import dbcon
-    if jsonData["action"] == 'bet':
-        # create user object
-        userObject = dbcon.userClass(None, None)
-        userObject.setToken(jsonData["token"])
-        # get bet amount
-        betValue = int(jsonData["betvalue"])
-        # remove bet value
-        userObject.updateBalance(-betValue)
-        # random 3 slots
-        symbol1 = random.choice(list(slotMap.values()))
-        symbol2 = random.choice(list(slotMap.values()))
-        symbol3 = random.choice(list(slotMap.values()))
-        # game logic
-        if symbol1 == symbol2 == symbol3:
-            if symbol1 == "7":
-                winValue = betValue * 100
-            elif symbol1 == "Bell":
-                winValue = betValue * 10
-            else:
-                winValue = betValue * 5
-        elif symbol1 == symbol2 or symbol1 == symbol3 or symbol2 == symbol3:
-            winValue = betValue * 2
+import dbcon
+if jsonData["action"] == 'bet':
+    # create user object
+    userObject = dbcon.userClass(None, None)
+    userObject.setToken(jsonData["token"])
+    # get bet amount
+    betValue = int(jsonData["betvalue"])
+    # remove bet value
+    userObject.updateBalance(-betValue)
+    # random 3 slots
+    symbol1 = random.choice(list(slotMap.values()))
+    symbol2 = random.choice(list(slotMap.values()))
+    symbol3 = random.choice(list(slotMap.values()))
+    # game logic
+    if symbol1 == symbol2 == symbol3:
+        if symbol1 == "7":
+            winValue = betValue * 100
+        elif symbol1 == "Bell":
+            winValue = betValue * 10
         else:
-            winValue = 0
-        # modify user bal
-        userObject.updateBalance(winValue)
-        # return json
-        print(json.dumps(
-            {
-                "win": winValue,
-                "symbol1": symbol1,
-                "symbol2": symbol2,
-                "symbol3": symbol3
-            }
-        ))
-except Exception as e:
-    print(str(e))
+            winValue = betValue * 5
+    elif symbol1 == symbol2 or symbol1 == symbol3 or symbol2 == symbol3:
+        winValue = betValue * 2
+    else:
+        winValue = 0
+    # modify user bal
+    userObject.updateBalance(winValue)
+    # return json
+    print(json.dumps(
+        {
+            "win": winValue,
+            "symbol1": symbol1,
+            "symbol2": symbol2,
+            "symbol3": symbol3
+        }
+    ))
