@@ -24,5 +24,6 @@ except json.JSONDecodeError:
     sys.exit(1)
 
 import dbcon
-print("dbcon")
+if jsonData["action"] == 'bet':
+    print("betujemy")
 
