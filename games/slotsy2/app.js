@@ -29,7 +29,7 @@ function getCookie(name) {
       document.getElementById("symbols").textContent =
         `${data.symbol1} | ${data.symbol2} | ${data.symbol3}`;
       document.getElementById("win").textContent =
-        `You won: ${data.win}`;
+        `You won: ${data.winvalue}`;
     })
     .catch(err => {
       console.error("Error:", err);
