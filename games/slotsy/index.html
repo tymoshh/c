@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Staszic Casino – Gra</title>
   <link rel="icon" href="https://cebularz7.w.staszic.waw.pl/c/icon.png" type="image/png" />
   <style>
@@ -75,7 +75,8 @@
       background-color: #e03b3b;
     }
 
-    .result, .balance {
+    .result,
+    .balance {
       margin-top: 15px;
       font-size: 1.2rem;
       min-height: 1.5em;
@@ -84,56 +85,130 @@
     .balance {
       font-weight: bold;
     }
+
+    /* Popup WYGRANA */
+    #winPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(185, 41, 41, 0.85);
+      color: white;
+      font-size: 4rem;
+      font-weight: bold;
+      padding: 40px 60px;
+      border-radius: 20px;
+      text-align: center;
+      z-index: 9999;
+      display: none;
+      user-select: none;
+      box-shadow: 0 0 20px 5px #b92928;
+      animation: fadeInOut 2s forwards;
+      white-space: pre-line;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.8);
+      }
+      10%,
+      90% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -40%) scale(0.8);
+      }
+    }
   </style>
 </head>
 <body>
   <img src="https://cebularz7.w.staszic.waw.pl/c/icon.png" alt="site-logo" class="logo" />
   <h1>Staszic Casino</h1>
 
-  <div class="balance" id="balance">Saldo: Wczytywanie...</div>
+  <div class="balance" id="balance">Saldo: 1000$</div>
 
   <div class="slot-machine">
-    <div class="reel" id="reel1">❓</div>
-    <div class="reel" id="reel2">❓</div>
-    <div class="reel" id="reel3">❓</div>
+    <div class="reel" id="reel1">🍒</div>
+    <div class="reel" id="reel2">🍋</div>
+    <div class="reel" id="reel3">🍇</div>
   </div>
 
   <button class="spin-button" id="spinButton" onclick="spin()">Zakręć (10$)</button>
   <div class="result" id="result"></div>
 
+  <div id="winPopup"></div>
+
   <script>
-    const button = document.getElementById('spinButton');
+    const symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"];
+    let balance = 1000;
 
     function spin() {
-      button.disabled = true;
-      document.getElementById('result').textContent = "🎰 Kręcimy...";
+      const button = document.getElementById("spinButton");
+      const resultEl = document.getElementById("result");
 
-      fetch("game.cgi", { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('reel1').textContent = data.result[0];
-          document.getElementById('reel2').textContent = data.result[1];
-          document.getElementById('reel3').textContent = data.result[2];
-          document.getElementById('balance').textContent = `Saldo: ${data.balance}$`;
-          document.getElementById('result').textContent = data.message;
-          button.disabled = data.balance < 10;
-        })
-        .catch(() => {
-          document.getElementById('result').textContent = "❌ Błąd serwera.";
-          button.disabled = false;
-        });
+      if (balance < 10) {
+        resultEl.textContent = "💸 Brak środków!";
+        return;
+      }
+
+      resultEl.textContent = "🎰 Kręcimy...";
+      button.disabled = true;
+
+      let interval = setInterval(() => {
+        document.getElementById("reel1").textContent = getRandomSymbol();
+        document.getElementById("reel2").textContent = getRandomSymbol();
+        document.getElementById("reel3").textContent = getRandomSymbol();
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(interval);
+
+        fetch("game.php", { method: "POST" })
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("reel1").textContent = data.result[0];
+            document.getElementById("reel2").textContent = data.result[1];
+            document.getElementById("reel3").textContent = data.result[2];
+
+            balance = data.balance;
+            document.getElementById("balance").textContent = `Saldo: ${balance}$`;
+
+            if (data.win > 0) {
+              showWinPopup(`WYGRANA!\n+${data.win}$`);
+              resultEl.textContent = "";
+            } else {
+              resultEl.textContent = data.message;
+            }
+            button.disabled = false;
+          })
+          .catch(() => {
+            resultEl.textContent = "❌ Błąd połączenia z serwerem";
+            button.disabled = false;
+          });
+      }, 500);
     }
 
-    // Inicjalizacja salda
-    fetch("game.cgi", { method: "GET" })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('balance').textContent = `Saldo: ${data.balance}$`;
-        button.disabled = data.balance < 10;
-      })
-      .catch(() => {
-        document.getElementById('balance').textContent = "❌ Błąd ładowania salda";
-      });
+    function getRandomSymbol() {
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+
+    function showWinPopup(text) {
+      const popup = document.getElementById("winPopup");
+      popup.textContent = text;
+      popup.style.display = "block";
+
+      // Restart animacji
+      popup.style.animation = "none";
+      popup.offsetHeight; // wymusza reflow
+      popup.style.animation = null;
+
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 2000);
+    }
   </script>
 </body>
 </html>

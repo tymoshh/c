@@ -13,7 +13,7 @@ userObject.createPasswdHash()
 userObject.createToken()
 
 print()
-userObject.checkInfo()
+userObject.viewInfo()
 
 userObject.createUser()
 

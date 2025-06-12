@@ -14,7 +14,7 @@ class userClass:
         self.id = id
         self.password = password
 
-    def checkInfo(self):
+    def viewInfo(self):
         print("ID : " + self.id)
         print("Password : " + self.password)
         print("Token : " + self.token)
@@ -41,11 +41,14 @@ class userClass:
         else:
             closeConnection()
             return 1
+        
+    def viewToken(self):
+        print("Token : " + self.token)
 
     def createToken(self):
         self.token = getHash(generateRandomString(255))
 
-    def createUser(self):
+    def createUser(self):        
         initiateConnection()
         cursor = dbcon.cursor()
         query = """

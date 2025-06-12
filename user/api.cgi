@@ -25,7 +25,12 @@ def main():
 
     import dbcon
     if jsonData["action"] == 'login':
-        dbcon.initiateConnection()
+        userObject = dbcon.userClass(jsonData["username"], jsonData["password"])
+        userObject.createPasswdHash()
+        userObject.fetchToken()
+        tokenVar = userObject.viewToken()
+        print(json.dumps({"token": tokenVar}))
+        
         
 
 
