@@ -23,6 +23,9 @@ class userClass:
     def createPasswdHash(self):
         self.passwdhash = getHash(self.password)
 
+    def setToken(self, targetToken):
+        self.token = targetToken
+
     def fetchToken(self):
         initiateConnection()
         cursor = dbcon.cursor()
@@ -59,6 +62,25 @@ class userClass:
         VALUES (%s, %s, %s)
         """
         values = (sanitizeInput(self.id), sanitizeInput(self.passwdhash), sanitizeInput(self.token))
+        dbcon.cursor().execute(query, values)
+        dbcon.commit()
+        closeConnection()
+
+    def fetchBalance(self):
+        initiateConnection()
+        cursor = dbcon.cursor()
+        query = "SELECT balance FROM usertable WHERE token = %s"
+        values = (sanitizeInput(self.token))
+        dbcon.cursor().execute(query, values)
+        result = cursor.fetchone()
+        userBalance = int(result[0])
+        return userBalance
+    
+    def updateBalance(self, balanceModifier):
+        initiateConnection()
+        cursor = dbcon.cursor()
+        query = "UPDATE usertable SET balance = balance + %s WHERE token = %s"
+        values = (balanceModifier, sanitizeInput(self.token))
         dbcon.cursor().execute(query, values)
         dbcon.commit()
         closeConnection()
