@@ -25,6 +25,6 @@ if jsonData["action"] == 'login':
         userObject = dbcon.userClass(jsonData["username"], jsonData["password"])
         userObject.createPasswdHash()
         userObject.fetchToken()
-        tokenVar = userObject.viewToken()
+        tokenVar = userObject.getToken()
         print(tokenVar)
 
