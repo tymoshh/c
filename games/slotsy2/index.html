@@ -12,14 +12,20 @@
 
   <div class="login-container">
     <h2>Slotsy2</h2>
+
     <div class="slot-box">
-      <div id="symbol1">?</div>
-      <div id="symbol2">?</div>
-      <div id="symbol3">?</div>
+      <div class="slot-symbol" id="symbol1">❓</div>
+      <div class="slot-symbol" id="symbol2">❓</div>
+      <div class="slot-symbol" id="symbol3">❓</div>
     </div>
-    <div class="win-box" id="win">Slotsy2</div>
-    <button onclick="spin()">Zakrec</button>
+
+    <div class="win-box" id="win">Kliknij aby zagrać!</div>
+
+    <!-- Add id="zakrec" for cooldown control -->
+    <button id="zakrec" onclick="spin()">Zakrec</button>
   </div>
+
+  <!-- Include SweetAlert and your logic -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="app.js"></script>
 </body>
