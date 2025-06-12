@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-print("Content-Type: text/plain\n")
+print("Content-Type: application/json\n")
 
 import os
 import cgi
@@ -20,7 +20,7 @@ try:
     for element in jsonData:
         print(element)
 except json.JSONDecodeError:
-    print("invalid json")
+    print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
 slotMap = {
@@ -60,7 +60,7 @@ if jsonData["action"] == 'bet':
     # add win value
     if winValue > 0:
         userObject.updateBalance(winValue)
-    # debug data as json
+    # data as json
     print(json.dumps({
        "winvalue": winValue,
        "symbol1": symbol1,

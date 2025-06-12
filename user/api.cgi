@@ -22,8 +22,13 @@ except json.JSONDecodeError:
 
 import dbcon
 if jsonData["action"] == 'login':
-        userObject = dbcon.userClass(jsonData["username"], jsonData["password"])
-        userObject.createPasswdHash()
-        userObject.fetchToken()
-        tokenVar = userObject.getToken()
-        print(json.dumps({"token": tokenVar}))
+    userObject = dbcon.userClass(jsonData["username"], jsonData["password"])
+    userObject.createPasswdHash()
+    userObject.fetchToken()
+    tokenVar = userObject.getToken()
+    print(json.dumps({"token": tokenVar}))
+elif jsonData["action"] == 'getbal':
+    userObject = dbcon.userClass(None, None)
+    userObject.setToken(jsonData["token"])
+    balanceVar = userObject.fetchBalance()
+    print(json.dumps({"balance": balanceVar}))
