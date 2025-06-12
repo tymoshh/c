@@ -241,7 +241,7 @@
       setTimeout(() => {
         clearInterval(interval);
 
-        fetch("/cgi-bin/game.cgi", {
+        fetch("game.cgi", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
