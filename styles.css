@@ -1,12 +1,12 @@
 /* main color variables */
 :root {
-    --main-bg: #0e0d13;           /* very dark purple-black background */
-    --container-bg: #1a1a23;      /* soft deep navy panel */
-    --text-color: #f3f3f7;        /* soft near-white text */
-    --accent: #ff5fa2;            /* vibrant pink for buttons/accents */
-    --accent-hover: #e34b8b;      /* slightly deeper pink for hover */
-    --nav-bg: #131218;            /* muted dark nav bar */
-    --nav-text: #9efeb7;          /* neon pastel green for nav text/icons */
+    --main-bg: #0d0d0d;           /* deep black background */
+    --container-bg: #1a1a1a;      /* soft dark grey for cards/containers */
+    --text-color: #e0e0e0;        /* light grey for general text */
+    --accent: #00ff88;            /* neon green accent (buttons, links) */
+    --accent-hover: #00cc6a;      /* slightly darker green on hover */
+    --nav-bg: #121212;            /* nav background: slightly lighter black */
+    --nav-text: #b6fcb6;          /* subtle soft green for nav text/icons */
   }
   
   
@@ -67,7 +67,7 @@
     padding: 2rem;
     width: 100%;
     max-width: 400px;
-    box-shadow: 0 0 10px rgba(185, 41, 40, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     margin-top: 2rem;
   }
   
