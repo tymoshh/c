@@ -1,13 +1,14 @@
 /* main color variables */
 :root {
-    --main-bg: #0b0f19;           /* rich dark navy background */
-    --container-bg: #161b22;      /* soft dark panel */
-    --text-color: #e6e9ef;        /* near-white for contrast */
-    --accent: #6366f1;            /* modern soft indigo/purple */
-    --accent-hover: #4f46e5;      /* deeper hover for buttons */
-    --nav-bg: #111827;            /* dark cool gray for nav */
-    --nav-text: #f1f5f9;          /* light gray-blue for text */
+    --main-bg: #0e0d13;           /* very dark purple-black background */
+    --container-bg: #1a1a23;      /* soft deep navy panel */
+    --text-color: #f3f3f7;        /* soft near-white text */
+    --accent: #ff5fa2;            /* vibrant pink for buttons/accents */
+    --accent-hover: #e34b8b;      /* slightly deeper pink for hover */
+    --nav-bg: #131218;            /* muted dark nav bar */
+    --nav-text: #9efeb7;          /* neon pastel green for nav text/icons */
   }
+  
   
   /* global styles */
   body {
