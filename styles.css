@@ -1,43 +1,57 @@
-/* main color variables */
+/* ==== main color variables ==== */
 :root {
-    --main-bg: #0d0d0d;           /* primary background */
-    --container-bg: #1a1a1a;      /* container/card background */
-    --text-color: #e5e5e5;        /* soft light text */
-    --accent: #10a831;            /* modern, deep green (not neon) */
-    --accent-hover: #10a831;      /* darker version on hover */
-    --nav-bg: #121212;            /* nav bar background */
-    --nav-text: #ccebd4;          /* faded mint/greenish for nav text */
+    --main-bg: #0d0d0d;
+    --container-bg: #1a1a1a;
+    --text-color: #e5e5e5;
+    --accent: #10a831;
+    --accent-hover: #10a831;
+    --nav-bg: #121212;
+    --nav-text: #ccebd4;
   }
   
   
-  /* global styles */
+  /* ==== global styles ==== */
   body {
     margin: 0;
+    padding: 1rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--main-bg);
     color: var(--text-color);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     min-height: 100vh;
-    padding: 1rem;
   }
   
-  /* navigation bar */
+  
+  /* ==== navigation bar ==== */
   nav {
     width: 100%;
-    background-color: var(--nav-bg);
     padding: 0.8rem 1.5rem;
+    background-color: var(--nav-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 0 10px #00000088;
   }
   
-  nav .nav-title {
-    font-size: 1.3rem;
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .nav-left img {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nav-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     color: var(--nav-text);
+    text-transform: uppercase;
   }
   
   nav ul {
@@ -59,22 +73,29 @@
     opacity: 0.8;
   }
   
-  /* login container */
+  .nav-user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  
+  /* ==== login container ==== */
   .login-container {
     background-color: var(--container-bg);
     border: 2px solid var(--accent);
     border-radius: 10px;
     padding: 2rem;
-    width: 100%;
     max-width: 400px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    width: 100%;
     margin-top: 2rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }
   
   .login-container h2 {
+    margin-bottom: 1.5rem;
     text-align: center;
     color: var(--accent);
-    margin-bottom: 1.5rem;
     text-transform: lowercase;
   }
   
@@ -91,23 +112,24 @@
   input {
     width: 100%;
     padding: 0.6rem;
+    background-color: #333;
     border: none;
     border-radius: 5px;
-    background-color: #333;
     color: #fff;
   }
   
-  /* button style */
+  
+  /* ==== button styles ==== */
   button {
     width: 100%;
     padding: 0.75rem;
+    margin-top: 1rem;
     background-color: var(--accent);
     border: none;
     border-radius: 5px;
     color: white;
     font-size: 1rem;
     cursor: pointer;
-    margin-top: 1rem;
     transition: background-color 0.2s;
   }
   
@@ -116,43 +138,69 @@
   }
   
   .message {
-    text-align: center;
     margin-top: 1rem;
+    text-align: center;
     color: var(--accent);
   }
-
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--nav-bg);
-    padding: 12px 24px;
-  }
-
-  .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .nav-left img {
-    width: 36px;
-    height: 36px;
-  }
-
-  .nav-title {
-    color: var(--nav-text);
-    font-size: 1.6rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-
-  .nav-user img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-
   
+  
+  /* ==== casino games subpage ==== */
+  .casino-header h1 {
+    font-size: 2.5rem;
+    color: var(--accent);
+    text-transform: lowercase;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 2rem;
+  }
+  
+  .game-box {
+    background-color: var(--container-bg);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  
+  .game-box:hover {
+    transform: scale(1.03);
+  }
+  
+  .game-box img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .game-title {
+    padding: 1rem;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    text-transform: lowercase;
+  }
+  
+  
+  /* ==== responsive tweaks ==== */
+  @media (max-width: 600px) {
+    .casino-header h1 {
+      font-size: 2rem;
+    }
+  
+    .game-title {
+      font-size: 1rem;
+    }
+  }
   
