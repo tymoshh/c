@@ -1,104 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Staszic Casino</title>
+<!-- ✅ This entire snippet can be injected with JS -->
+<nav>
   <link rel="stylesheet" href="https://cebularz7.w.staszic.waw.pl/c/styles.css">
-  <style>
-    nav {
-      display: flex;
-      align-items: center;
-      background-color: #222;
-      padding: 10px;
+
+  <div class="nav-left">
+    <a href="https://cebularz7.w.staszic.waw.pl/c/home/">
+      <img src="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" alt="home" />
+    </a>
+    <div class="nav-title">staszic casino</div>
+  </div>
+
+  <div class="nav-user">
+    <a href="https://cebularz7.w.staszic.waw.pl/c/user/">
+      <img src="https://img.icons8.com/glyph-neue/48/FFFFFF/user--v1.png" alt="user" />
+    </a>
+  </div>
+
+  <!-- Balance placeholder -->
+  <div class="nav-balance" style="color: white; margin-left: auto; padding-right: 15px; font-weight: bold;"></div>
+</nav>
+
+<script>
+  // 👇 Function must be called AFTER this HTML is injected into DOM
+  function initBalance() {
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
     }
 
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    const balanceDiv = document.querySelector('.nav-balance');
+    const token = getCookie('token');
+
+    if (!balanceDiv) {
+      console.warn('[initBalance] .nav-balance not found!');
+      return;
     }
 
-    .nav-title {
-      color: white;
-      font-weight: bold;
-      font-size: 1.2em;
+    if (!token) {
+      balanceDiv.textContent = 'no token - nobal';
+      return;
     }
 
-    .nav-user {
-      margin-left: auto;
-      margin-right: 15px;
-    }
-
-    .nav-balance {
-      color: white;
-      font-weight: bold;
-      padding-right: 15px;
-    }
-  </style>
-</head>
-<body>
-
-  <nav>
-    <div class="nav-left">
-      <a href="https://cebularz7.w.staszic.waw.pl/c/home/">
-        <img src="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" alt="home" />
-      </a>
-      <div class="nav-title">staszic casino</div>
-    </div>
-
-    <div class="nav-user">
-      <a href="https://cebularz7.w.staszic.waw.pl/c/user/">
-        <img src="https://img.icons8.com/glyph-neue/48/FFFFFF/user--v1.png" alt="user" />
-      </a>
-    </div>
-
-    <!-- ✅ Now the balance div actually exists -->
-    <div class="nav-balance"></div>
-  </nav>
-
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const balanceDiv = document.querySelector('.nav-balance');
-
-      if (!balanceDiv) return;
-
-      function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-      }
-
-      const token = getCookie('token');
-
-      if (!token) {
-        balanceDiv.textContent = 'nobal';
-        return;
-      }
-
-      fetch('https://cebularz7.w.staszic.waw.pl/c/user/api.cgi', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          action: 'getbal',
-          token: token
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data && typeof data.balance !== 'undefined') {
-          balanceDiv.textContent = data.balance + '$';
-        } else {
-          balanceDiv.textContent = 'nobal';
-        }
-      })
-      .catch(() => {
-        balanceDiv.textContent = 'nobal';
-      });
+    fetch('https://cebularz7.w.staszic.waw.pl/c/user/api.cgi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'getbal', token })
+    })
+    .then(res => res.json())
+    .then(data => {
+      balanceDiv.textContent = JSON.stringify(data, null, 2);
+    })
+    .catch(err => {
+      balanceDiv.textContent = 'fetch error: ' + err;
     });
-  </script>
-
-</body>
-</html>
+  }
+</script>
