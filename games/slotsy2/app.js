@@ -38,8 +38,8 @@ function spin() {
   if (!token) {
     Swal.fire({
       icon: "error",
-      title: "Nie jestes zalogowany!",
-      confirmButtonText: "OK"
+      title: "nie jestes zalogowany",
+      confirmButtonText: "cholibka"
     });
     return;
   }
@@ -106,7 +106,7 @@ function spin() {
     if (winAmount > 0) {
       Swal.fire({
         icon: "success",
-        title: `${winAmount}$!`,
+        title: `${winAmount}$`,
         showConfirmButton: true,
         confirmButtonText: "kozak"
       });
