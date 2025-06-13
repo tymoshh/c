@@ -1,36 +1,26 @@
 #!/usr/bin/env python3
-
-print("Content-Type: application/json\n")
-
 import os
-import cgi
 import json
 import sys
 import random
+import dbcon
 
-sys.path.insert(0, "/home/k24_c/cebularz7/local/usr/lib/python3/dist-packages")
+print("Content-Type: application/json\n")
 
 try:
-    contentLength = int(os.environ.get('CONTENT_LENGTH', 0))
+    contentLength = int(os.environ.get("CONTENT_LENGTH", 0))
 except (TypeError, ValueError):
     contentLength = 0
-rawData = sys.stdin.read(contentLength) if contentLength > 0 else ''
+rawData = sys.stdin.read(contentLength) if contentLength > 0 else ""
 try:
     jsonData = json.loads(rawData)
 except json.JSONDecodeError:
     print(json.dumps({"error": "Invalid JSON"}))
     sys.exit(1)
 
-slotMap = {
-    1: "Seven",
-    2: "Bell",
-    3: "Grape",
-    4: "Cherry",
-    6: "Lemon"
-}
+slotMap = {1: "Seven", 2: "Bell", 3: "Grape", 4: "Cherry", 6: "Lemon"}
 
-import dbcon
-if jsonData["action"] == 'bet':
+if jsonData["action"] == "bet":
     # create user object
     userObject = dbcon.userClass(None, None)
     userObject.setToken(jsonData["token"])
@@ -59,11 +49,13 @@ if jsonData["action"] == 'bet':
     if winValue > 0:
         userObject.updateBalance(winValue)
     # data as json
-    print(json.dumps({
-       "winvalue": winValue,
-       "symbol1": symbol1,
-       "symbol2": symbol2,
-       "symbol3": symbol3 
-    }))
-    
-
+    print(
+        json.dumps(
+            {
+                "winvalue": winValue,
+                "symbol1": symbol1,
+                "symbol2": symbol2,
+                "symbol3": symbol3,
+            }
+        )
+    )

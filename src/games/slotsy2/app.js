@@ -69,7 +69,7 @@ function spin() {
   let result = null;
   let requestFailed = false;
 
-  fetch("https://cebularz7.w.staszic.waw.pl/c/games/slotsy2/api.cgi", {
+  fetch("/c/games/slotsy2/api.cgi", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
