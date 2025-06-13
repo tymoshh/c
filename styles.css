@@ -1,12 +1,12 @@
 /* main color variables */
 :root {
-    --main-bg: #0d0d0d;           /* deep black background */
-    --container-bg: #1a1a1a;      /* soft dark grey for cards/containers */
-    --text-color: #e0e0e0;        /* light grey for general text */
-    --accent: #00ff88;            /* neon green accent (buttons, links) */
-    --accent-hover: #00cc6a;      /* slightly darker green on hover */
-    --nav-bg: #121212;            /* nav background: slightly lighter black */
-    --nav-text: #b6fcb6;          /* subtle soft green for nav text/icons */
+    --main-bg: #0d0d0d;           /* primary background */
+    --container-bg: #1a1a1a;      /* container/card background */
+    --text-color: #e5e5e5;        /* soft light text */
+    --accent: #10a831;            /* modern, deep green (not neon) */
+    --accent-hover: #10a831;      /* darker version on hover */
+    --nav-bg: #121212;            /* nav bar background */
+    --nav-text: #ccebd4;          /* faded mint/greenish for nav text */
   }
   
   
