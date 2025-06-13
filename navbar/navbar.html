@@ -50,8 +50,10 @@
     .then(res => res.json())
     .then(data => {
       balanceDiv.textContent = JSON.stringify(data, null, 2);
+      console.log("test2");
     })
     .catch(err => {
+      console.error("test");
       balanceDiv.textContent = 'fetch error: ' + err;
     });
   }
