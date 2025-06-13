@@ -95,7 +95,7 @@ class userClass:
     def updatePlayedgames(self):
         initiateConnection()
         cursor = dbcon.cursor()
-        query = "UPDATE usertable SET balance = balance + %s WHERE token = %s"
+        query = "UPDATE usertable SET playedgames = playedgames + %s WHERE token = %s"
         values = (1, sanitizeInput(self.token))
         dbcon.cursor().execute(query, values)
         dbcon.commit()
