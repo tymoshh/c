@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <title>Slotsy2</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cebularz7.w.staszic.waw.pl/c/styles.css" />
+  <style>
+    #navbar-container {
+      margin-bottom: 20px; /* spacing below navbar */
+    }
+  </style>
 </head>
 <body>
-  <div class="home-button">
-    <a href="https://cebularz7.w.staszic.waw.pl/c/"><img src="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" alt="Home" /></a>
-  </div>
 
-  <div class="login-container">
+  <!-- Navbar container -->
+  <div id="navbar-container"></div>
+
+  <div class="play-container">
     <h2>Jednoreki Bandyta</h2>
 
     <div class="slot-box">
@@ -28,5 +33,17 @@
   <!-- Include SweetAlert and your logic -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="app.js"></script>
+
+  <script>
+    // Load navbar HTML dynamically and insert into #navbar-container
+    fetch('https://cebularz7.w.staszic.waw.pl/c/navbar/navbar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('navbar-container').innerHTML = data;
+      })
+      .catch(err => {
+        console.error('Failed to load navbar:', err);
+      });
+  </script>
 </body>
 </html>
