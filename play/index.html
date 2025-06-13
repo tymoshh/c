@@ -1,110 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>casino games</title>
   <link rel="icon" href="https://cebularz7.w.staszic.waw.pl/c/icon.png" type="image/png" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #0d0d0d;
-      color: #e0d7f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem;
-      min-height: 100vh;
-      position: relative;
-    }
-
-    .home-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
-
-    .home-button img {
-      width: 40px;
-      height: 40px;
-      opacity: 0.85;
-      transition: opacity 0.2s;
-    }
-
-    .home-button img:hover {
-      opacity: 1;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      text-transform: lowercase;
-      color: #b92928;
-      margin-bottom: 2rem;
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      width: 100%;
-      max-width: 1000px;
-    }
-
-    .game-box {
-      background-color: #1a1a1a;
-      border: 2px solid #b92928;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .game-box:hover {
-      transform: scale(1.03);
-    }
-
-    .game-box img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-
-    .game-title {
-      padding: 1rem;
-      font-size: 1.1rem;
-      color: #fff;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cebularz7.w.staszic.waw.pl/c/styles.css" />
 </head>
 <body>
 
-  <a href="https://cebularz7.w.staszic.waw.pl/c/index.html" class="home-button">
-    <img src="https://img.icons8.com/deco-glyph/48/FFFFFF/cottage.png" alt="home" />
-  </a>
+  <!-- navbar will be inserted here -->
+  <div id="navbar"></div>
+  <script>
+    fetch("https://cebularz7.w.staszic.waw.pl/c/navbar/navbar.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("navbar").innerHTML = html);
+  </script>
 
-  <!-- ✅ Title -->
-  <h1>Casino Games</h1>
+  <!-- page title -->
+  <header class="casino-header">
+    <h1>casino games</h1>
+  </header>
 
-  <!-- ✅ Games Grid -->
-  <div class="games-grid">
+  <!-- games grid -->
+  <main>
+    <div class="games-grid">
       <div class="game-box" onclick="location.href='https://cebularz7.w.staszic.waw.pl/c/games/slotsy2/index.html'">
-      <img src="game1.png" alt="Game 1" />
-      <div class="game-title">Jednoręki Bandyta</div>
+        <img src="game1.png" alt="game 1" />
+        <div class="game-title">jednoreki bandyta</div>
+      </div>
+      <div class="game-box" onclick="location.href='https://cebularz7.w.staszic.waw.pl/c/games/kosci2/index.html'">
+        <img src="game2.png" alt="game 2" />
+        <div class="game-title">kosci</div>
+      </div>
+      <div class="game-box" onclick="location.href='https://cebularz7.w.staszic.waw.pl/c/games/kolofortuny/index.html'">
+        <img src="game3.png" alt="game 3" />
+        <div class="game-title">kolo fortuny</div>
+      </div>
     </div>
-    <div class="game-box" onclick="location.href='https://cebularz7.w.staszic.waw.pl/c/games/kosci2/index.html'">
-      <img src="game2.png" alt="Game 2" />
-      <div class="game-title">Kości</div>
-    </div>
-    <div class="game-box" onclick="location.href='https://cebularz7.w.staszic.waw.pl/c/games/kolofortuny/index.html'">
-      <img src="game3.png" alt="Game 3" />
-      <div class="game-title">Koło fortuny</div>
-    </div>
-  </div>
+  </main>
+
 </body>
 </html>
