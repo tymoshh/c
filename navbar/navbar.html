@@ -48,8 +48,7 @@
       }
     })
     .catch(err => {
-      // handle errors silently or log
-      console.error('Balance fetch error:', err);
+      balanceDiv.textContent = 'nobal';
     });
   }
 </script>
