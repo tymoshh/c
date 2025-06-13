@@ -19,7 +19,6 @@
 </nav>
 
 <script>
-  // Function to get cookie by name
   function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -28,6 +27,8 @@
   }
 
   const token = getCookie('token');
+  const balanceDiv = document.querySelector('.nav-balance');
+
   if (token) {
     fetch('https://cebularz7.w.staszic.waw.pl/c/user/api.cgi', {
       method: 'POST',
@@ -41,14 +42,16 @@
     })
     .then(response => response.json())
     .then(data => {
-      if (data && data.balance !== undefined) {
-        // Show balance in nav
-        const balanceDiv = document.querySelector('.nav-balance');
+      if (data && typeof data.balance !== 'undefined') {
         balanceDiv.textContent = data.balance + '$';
+      } else {
+        balanceDiv.textContent = 'nobal';
       }
     })
-    .catch(err => {
+    .catch(() => {
       balanceDiv.textContent = 'nobal';
     });
+  } else {
+    balanceDiv.textContent = 'nobal';
   }
 </script>
