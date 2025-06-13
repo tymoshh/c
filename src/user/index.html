@@ -92,6 +92,7 @@
           messageDiv.textContent = result.message || 'blad logowania';
         }
       } catch (error) {
+        console.error(error);
         messageDiv.textContent = 'blad sieci lub serwera';
       }
     });

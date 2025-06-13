@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/home/k24_c/mio/.homepage/c/run_cgi
 import os
 import json
 import sys
 import dbcon
-
+sys.stderr = open("/tmp/mio-c-err.log", mode="w")
 print("Content-Type: application/json\n")
 
 
@@ -29,3 +29,5 @@ elif jsonData["action"] == "getbal":
     userObject.setToken(jsonData["token"])
     balanceVar = userObject.fetchBalance()
     print(json.dumps({"balance": balanceVar}))
+else:
+    print('"works!"')

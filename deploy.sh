@@ -9,9 +9,9 @@ set -e  # Exit on any error
 USER="mio"
 
 # Configuration
-REMOTE_HOST="${USER}@minionki.staszic.waw.pl"  # Default or from first argument
-SSH_KEY="${2:-~/.ssh/staszic}"            # Default or from second argument
-REMOTE_DIR="~/.homepage/c"
+REMOTE_HOST="${USER}@minionki.staszic.waw.pl"
+SSH_KEY="${2:-~/.ssh/staszic}"
+REMOTE_DIR="/home/k24_c/${USER}/.homepage/c"
 
 # Colors for output
 RED='\033[0;31m'
@@ -48,18 +48,19 @@ deploy_files() {
     ssh -i "$SSH_KEY" "$REMOTE_HOST" "mkdir -p $REMOTE_DIR"
     
     # Copy source files to remote homepage directory
-    log "Copying source files from $LOCAL_SRC to $REMOTE_HOST:$REMOTE_DIR"
+    log "Copying source files to $REMOTE_HOST:$REMOTE_DIR"
 
     # Wipe the remote directory contents (including hidden files)
     ssh -i "$SSH_KEY" "$REMOTE_HOST" "find '$REMOTE_DIR' -mindepth 1 -delete 2>/dev/null || \
     find '$REMOTE_DIR' -mindepth 1 -exec rm -rf {} + 2>/dev/null"
 
     # Copy files recursively with compression and preservation
-    scp -r -i "$SSH_KEY" -C -p "$LOCAL_SRC/." "$REMOTE_HOST:$REMOTE_DIR/"
+    scp -r -i "$SSH_KEY" -C "./src/." "$REMOTE_HOST:$REMOTE_DIR"
     
     # Copy pyproject.toml
     log "Copying pyproject.toml to remote server"
     scp -i "$SSH_KEY" "pyproject.toml" "$REMOTE_HOST:$REMOTE_DIR/"
+    scp -i "$SSH_KEY" "uv.lock" "$REMOTE_HOST:$REMOTE_DIR/"
 }
 
 # Setup Python virtual environment
@@ -70,36 +71,15 @@ setup_venv() {
         cd '${REMOTE_DIR}'
         
         # Check if python3 is available
-        if ! command -v python3 &> /dev/null; then
-            echo "Error: python3 is not installed on the remote server"
+        if ! command -v uv &> /dev/null; then
+            echo "Error: uv is not installed on the remote server"
             exit 1
         fi
         
-        # Remove existing venv if it exists
-        if [[ -d ".venv" ]]; then
-            echo "Removing existing virtual environment..."
-            rm -rf .venv
-        fi
-        
-        # Create new virtual environment
-        echo "Creating new virtual environment..."
-        python3 -m venv .venv
-        
-        # Activate virtual environment and install dependencies
-        echo "Activating virtual environment and installing dependencies..."
-        source .venv/bin/activate
-        
-        # Upgrade pip
-        pip install --upgrade pip
-        
-        # Install dependencies from pyproject.toml
-        if [[ -f "pyproject.toml" ]]; then
-            pip install -e .
-        else
-            echo "Warning: pyproject.toml not found in remote directory"
-        fi
-        echo "${REMOTE_DIR}/dbcon" > /home/k24_c/mio/.local/lib/python3.12/site-packages/dbconf.pth
-        
+        uv sync --locked --no-dev
+
+        echo "${REMOTE_DIR}/dbcon" > "${REMOTE_DIR}/.venv/lib/python3.13/site-packages/dbcon.pth"
+ 
         echo "Virtual environment setup completed successfully"
 EOF
 }
@@ -108,16 +88,10 @@ EOF
 set_permissions() {
     log "Setting proper permissions for CGI files..."
     
-    chmod 700 /home/k24_c/${USER}/local/usr/lib/python3/dist-packages/dbcon.py
-
     ssh -i "$SSH_KEY" "$REMOTE_HOST" << EOF
         cd '${REMOTE_DIR}'
 
-        cp ./dbcon/dbcon.py ${REMOTE_DIR}/.venv
-
-        find ./ -type d -print0 | xargs -0 chmod 711
         find ./ -type f \( -name "*.html" -o -name "*.css" -o -name "*.js" \) -print0 | xargs -0 chmod 644
-        find ./ -type f -name "*.php" -print0 | xargs -0 chmod 700
         find ./ -type f \( -name "*.cgi" -o -name "*.py" \) -print0 | xargs -0 chmod 700
 
         # Make CGI files executable
@@ -126,6 +100,8 @@ set_permissions() {
         
         # Ensure proper directory permissions
         find . -type d -exec chmod 755 {} \;
+
+        chmod +x run_cgi
 EOF
     echo "Permissions set successfully"
 }

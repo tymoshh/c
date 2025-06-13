@@ -6,7 +6,7 @@ import secrets
 import string
 import re
 
-load_dotenv(os.environ["HOME"] + "/.c/.env")
+load_dotenv(os.environ.get("HOME", "/home/k24_c/mio") + "/.c/.env")
 
 db_connection = None
 

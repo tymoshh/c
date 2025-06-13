@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/k24_c/mio/.homepage/c/run_cgi
 import os
 import json
 import sys

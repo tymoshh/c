@@ -33,17 +33,23 @@ RUN apt-get update && \
 
 # Create directory structure
 RUN mkdir -p /home/k24_c/mio/.c \
-             /var/run/lighttpd \
-             /home/k24_c/mio/.local/lib/python3.12/site-packages && \
+             /var/run/lighttpd && \
     chown -R mio:k24_c /home/k24_c/mio /var/run/lighttpd
 
 # Copy virtual environment from builder
 COPY --from=builder --chown=mio:k24_c /app/ /home/k24_c/mio/.homepage/
 COPY --from=builder --chown=python:python /python /python
 USER mio
-RUN mv /home/k24_c/mio/.homepage/src /home/k24_c/mio/.homepage/c
+WORKDIR /home/k24_c/mio/.homepage/c
+RUN mv /home/k24_c/mio/.homepage/src/* /home/k24_c/mio/.homepage/c
 RUN echo "/home/k24_c/mio/.homepage/c/dbcon" > /home/k24_c/mio/.homepage/.venv/lib/python3.12/site-packages/dbcon.pth
 RUN echo "export PATH=\$HOME/.homepage/.venv/bin:\$PATH" >> /home/k24_c/mio/.bashrc
+RUN find ./ -type f \( -name "*.html" -o -name "*.css" -o -name "*.js" \) -exec chmod 644 {} \; && \
+        find ./ -type f \( -name "*.cgi" -o -name "*.py" \) -exec chmod 700 {} \; && \
+        find . -name "*.cgi" -type f  -exec chmod +x {} \; && \
+        find . -name "*.py" -type f -exec chmod +x {} \; && \
+        find . -type d -exec chmod 755 {} \; && \
+        chmod +x run_cgi
 
 USER root
 # Copy Lighttpd configuration
