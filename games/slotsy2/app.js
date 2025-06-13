@@ -92,8 +92,8 @@ function spin() {
     if (requestFailed || !result) {
       Swal.fire({
         icon: "error",
-        title: "Cos sie wysypało!",
-        confirmButtonText: "Sprobuj ponownie"
+        title: "cos sie sypie",
+        confirmButtonText: "klops"
       });
       return;
     }
@@ -106,9 +106,9 @@ function spin() {
     if (winAmount > 0) {
       Swal.fire({
         icon: "success",
-        title: `Wygrales ${winAmount}$!`,
+        title: `${winAmount}$!`,
         showConfirmButton: true,
-        confirmButtonText: "Super!"
+        confirmButtonText: "kozak"
       });
     }
   }, 800);
