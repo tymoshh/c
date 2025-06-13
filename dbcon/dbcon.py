@@ -70,10 +70,11 @@ class userClass:
         initiateConnection()
         cursor = dbcon.cursor()
         query = "SELECT balance FROM usertable WHERE token = %s"
-        values = (sanitizeInput(self.token))
-        dbcon.cursor().execute(query, values)
+        values = (sanitizeInput(self.token),)  # <-- krotka z jednym elementem
+        cursor.execute(query, values)          # <-- używamy tego samego kursora
         result = cursor.fetchone()
-        userBalance = int(result[0])
+        userBalance = result[0] if result else None
+        closeConnection()
         return userBalance
     
     def updateBalance(self, balanceModifier):
