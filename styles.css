@@ -1,19 +1,16 @@
-/* =======================
-   COLOR VARIABLES
-========================== */
+/* main color variables */
 :root {
-    --main-bg: #0d0d0d;
-    --container-bg: #1a1a1a;
-    --text-color: #e5e5e5;
-    --accent: #10a831;
-    --accent-hover: #0d8e2a;
-    --nav-bg: #121212;
-    --nav-text: #ccebd4;
+    --main-bg: #0d0d0d;           /* primary background */
+    --container-bg: #1a1a1a;      /* container/card background */
+    --text-color: #e5e5e5;        /* soft light text */
+    --accent: #10a831;            /* modern, deep green (not neon) */
+    --accent-hover: #10a831;      /* darker version on hover */
+    --nav-bg: #121212;            /* nav bar background */
+    --nav-text: #ccebd4;          /* faded mint/greenish for nav text */
   }
   
-  /* =======================
-     GLOBAL STYLES
-  ========================== */
+  
+  /* global styles */
   body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,9 +24,7 @@
     padding: 1rem;
   }
   
-  /* =======================
-     NAVIGATION BAR
-  ========================== */
+  /* navigation bar */
   nav {
     width: 100%;
     background-color: var(--nav-bg);
@@ -40,29 +35,9 @@
     box-shadow: 0 0 10px #00000088;
   }
   
-  .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  
-  .nav-left img {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .nav-title {
+  nav .nav-title {
+    font-size: 1.3rem;
     color: var(--nav-text);
-    font-size: 1.6rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  
-  .nav-user img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
   }
   
   nav ul {
@@ -84,78 +59,100 @@
     opacity: 0.8;
   }
   
-  /* =======================
-     CASINO HEADER
-  ========================== */
-  .casino-header {
+  /* login container */
+  .login-container {
+    background-color: var(--container-bg);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    margin-top: 2rem;
+  }
+  
+  .login-container h2 {
     text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .casino-header h1 {
-    font-size: 2.5rem;
     color: var(--accent);
-    text-transform: uppercase;
-    margin: 0.5rem 0;
+    margin-bottom: 1.5rem;
+    text-transform: lowercase;
   }
   
-  .login-btn {
-    width: auto;
-    padding: 0.6rem 1.2rem;
-    background-color: var(--accent);
-    color: #fff;
-    font-weight: bold;
-    font-size: 1rem;
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.6rem;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 1rem;
+    background-color: #333;
+    color: #fff;
   }
   
-  .login-btn:hover {
-    background-color: var(--accent-hover);
-  }
-  
-  /* =======================
-     BUTTONS ROW
-  ========================== */
-  .all-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
+  /* button style */
+  button {
     width: 100%;
-    max-width: 800px;
-    margin-bottom: 2rem;
-  }
-  
-  .big-button {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+    padding: 0.75rem;
     background-color: var(--accent);
     border: none;
-    border-radius: 8px;
-    color: #fff;
+    border-radius: 5px;
+    color: white;
+    font-size: 1rem;
     cursor: pointer;
-    flex: 1 1 auto;
-    min-width: 120px;
+    margin-top: 1rem;
     transition: background-color 0.2s;
   }
   
-  .big-button:hover {
+  button:hover {
     background-color: var(--accent-hover);
   }
   
-  /* =======================
-     FOOTER
-  ========================== */
-  footer {
+  .message {
     text-align: center;
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: auto;
-    padding: 1rem;
-    max-width: 700px;
+    margin-top: 1rem;
+    color: var(--accent);
   }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--nav-bg);
+    padding: 12px 24px;
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .nav-left img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .nav-title {
+    color: var(--nav-text);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  
   
