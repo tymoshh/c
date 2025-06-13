@@ -9,24 +9,13 @@
 <body>
 
   <!-- navbar will be loaded here -->
-<div id="navbar"></div>
-<script>
-  fetch("https://cebularz7.w.staszic.waw.pl/c/navbar/navbar.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("navbar").innerHTML = html;
-
-      // Now call initBalance AFTER the navbar is injected
-      if (typeof initBalance === "function") {
-        initBalance();
-      } else {
-        console.warn("initBalance function not found");
-      }
-    })
-    .catch(err => {
-      console.error("Failed to load navbar:", err);
-    });
-</script>
+  <div id="navbar"></div>
+  <script>
+    fetch("https://cebularz7.w.staszic.waw.pl/c/navbar/navbar.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("navbar").innerHTML = html);
+    initBalance();
+  </script>
 
   <main>
     <div class="button-row all-buttons">
