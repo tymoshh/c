@@ -30,5 +30,5 @@ if jsonData["action"] == 'login':
 elif jsonData["action"] == 'getbal':
     userObject = dbcon.userClass(None, None)
     userObject.setToken(jsonData["token"])
-    balanceVar = str(userObject.fetchBalance())
+    balanceVar = "None"
     print(json.dumps({"balance": balanceVar}))
