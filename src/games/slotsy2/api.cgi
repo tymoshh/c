@@ -1,61 +1,54 @@
 #!/home/k24_c/mio/.homepage/c/run_cgi
-import os
 import json
-import sys
+import os
 import random
-import dbcon
+import sys
+
+from dbconn import User
+from pydantic import BaseModel, ValidationError
 
 print("Content-Type: application/json\n")
 
+
+class Data(BaseModel):
+    token: str
+    betvalue: int
+
+
 try:
-    contentLength = int(os.environ.get("CONTENT_LENGTH", 0))
+    content_length = int(os.environ.get("CONTENT_LENGTH", "0"))
 except (TypeError, ValueError):
-    contentLength = 0
-rawData = sys.stdin.read(contentLength) if contentLength > 0 else ""
+    content_length = 0
+raw_data = sys.stdin.read(content_length) if content_length > 0 else ""
+
 try:
-    jsonData = json.loads(rawData)
-except json.JSONDecodeError:
-    print(json.dumps({"error": "Invalid JSON"}))
+    data = Data.model_validate_json(raw_data)
+except ValidationError as e:
+    print(json.dumps({"error": "Invalid JSON" + str(e)}))
     sys.exit(1)
 
-slotMap = {1: "Seven", 2: "Bell", 3: "Grape", 4: "Cherry", 6: "Lemon"}
+slot_map = {1: "Seven", 2: "Bell", 3: "Grape", 4: "Cherry", 6: "Lemon"}
 
-if jsonData["action"] == "bet":
-    # create user object
-    userObject = dbcon.userClass(None, None)
-    userObject.setToken(jsonData["token"])
-    # get bet value
-    betValue = jsonData["betvalue"]
-    # remove bet value
-    userObject.updateBalance(-betValue)
-    userObject.updatePlayedgames()
-    # choose symbols
-    symbol1 = random.choice(list(slotMap.values()))
-    symbol2 = random.choice(list(slotMap.values()))
-    symbol3 = random.choice(list(slotMap.values()))
-    # game logic
-    if symbol1 == symbol2 == symbol3:
-        if symbol1 == "Seven":
-            winValue = betValue * 100
-        elif symbol1 == "Bell":
-            winValue = betValue * 10
-        else:
-            winValue = betValue * 5
-    elif symbol1 == symbol2 or symbol1 == symbol3 or symbol2 == symbol3:
-        winValue = betValue * 2
+try:
+    user = User.auth(data.token)
+except ValueError as e:
+    print(json.dumps({"error": e.args[0]}))
+    sys.exit(1)
+bet_value = data.bet_value
+user.update_balance(-bet_value)
+user.update_played_games()
+symbols = random.choices(list(slot_map.values()), k=2)
+if symbols[0] == symbols[1] == symbols[2]:
+    if symbols[0] == "Seven":
+        win_value = bet_value * 100
+    elif symbols[0] == "Bell":
+        win_value = bet_value * 10
     else:
-        winValue = 0
-    # add win value
-    if winValue > 0:
-        userObject.updateBalance(winValue)
-    # data as json
-    print(
-        json.dumps(
-            {
-                "winvalue": winValue,
-                "symbol1": symbol1,
-                "symbol2": symbol2,
-                "symbol3": symbol3,
-            }
-        )
-    )
+        win_value = bet_value * 5
+elif len(set(symbols)) == 2:
+    win_value = bet_value * 2
+else:
+    win_value = 0
+
+user.update_balance(win_value)
+print(json.dumps({"winvalue": win_value, "symbols": symbols}))

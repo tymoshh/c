@@ -45,7 +45,6 @@ function spin() {
   }
 
   const payload = {
-    action: "bet",
     token: token,
     betvalue: 10
   };
@@ -98,9 +97,9 @@ function spin() {
       return;
     }
 
-    symbolElements[0].textContent = getSymbol(result.symbol1);
-    symbolElements[1].textContent = getSymbol(result.symbol2);
-    symbolElements[2].textContent = getSymbol(result.symbol3);
+    symbolElements[0].textContent = getSymbol(result.symbols[0]);
+    symbolElements[1].textContent = getSymbol(result.symbols[1]);
+    symbolElements[2].textContent = getSymbol(result.symbols[2]);
 
     const winAmount = Number(result.winvalue);
     if (winAmount > 0) {

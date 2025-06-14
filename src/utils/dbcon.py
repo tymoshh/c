@@ -1,14 +1,17 @@
-import os
+# ruff: noqa
 import hashlib
-from dotenv import load_dotenv
-import mysql.connector
+import os
+import re
 import secrets
 import string
-import re
+
+import mysql.connector
+from dotenv import load_dotenv
 
 load_dotenv(os.environ.get("HOME", "/home/k24_c/mio") + "/.c/.env")
 
 db_connection = None
+
 
 class userClass:
     def __init__(self, id, passwordhash):
@@ -17,11 +20,7 @@ class userClass:
         self.token = None
 
     def viewInfo(self):
-        return (
-            f"ID : {self.id}\n"
-            f"Token : {self.token}\n"
-            f"Passwdhash : {self.passwdhash}"
-        )
+        return f"ID : {self.id}\nToken : {self.token}\nPasswdhash : {self.passwdhash}"
 
     def createPasswdHash(self):
         self.passwdhash = getHash(self.password)
@@ -41,12 +40,10 @@ class userClass:
                 closeConnection()
                 self.token = fetchedtoken
                 return 0
-            else:
-                closeConnection()
-                return 1
-        else:
             closeConnection()
             return 1
+        closeConnection()
+        return 1
 
     def viewToken(self):
         print("Token : " + self.token)
@@ -142,6 +139,7 @@ def initiateConnection():
         INDEX `idx_id` (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     """)
+
 
 def closeConnection():
     global db_connection

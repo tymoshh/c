@@ -5,12 +5,12 @@ print("DODAWANIE UZYTKOWNIKOW DO KASYNA")
 ID = input("Podaj ID : ")
 PASSWD = input("Podaj haslo : ")
 
-userObject = dbcon.userClass(ID, dbcon.get_hash(PASSWD))
+user_object = dbcon.userClass(ID, dbcon.get_hash(PASSWD))
 
-userObject.createPasswdHash()
-userObject.createToken()
+user_object.createPasswdHash()
+user_object.createToken()
 
-print(userObject.viewInfo())
+print(user_object.viewInfo())
 
-userObject.createUser()
+user_object.createUser()
 print("Uzytkownik dodany!")

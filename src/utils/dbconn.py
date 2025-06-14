@@ -3,6 +3,7 @@ import os
 import re
 import secrets
 import string
+from typing import Self
 
 import mysql.connector
 from dotenv import load_dotenv
@@ -11,11 +12,10 @@ from mysql.connector.abstracts import MySQLConnectionAbstract
 load_dotenv(os.environ.get("HOME", "/home/k24_c/mio") + "/.c/.env")
 
 
-def sanitizeInput(input_str: str):
+def sanitize_input(input_str: str):
     input_str = re.sub(r"\s+", "", input_str)
     input_str = re.sub(r"[^a-zA-Z0-9_]", "", input_str)
-    input_str = input_str[:255]
-    return input_str
+    return input_str[:255]
 
 
 class DbConn:
@@ -56,7 +56,7 @@ class DbConn:
 
     def get_user_data(self, username: str, what: str) -> tuple | None:
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT %s FROM usertable WHERE id = %s", (what, sanitizeInput(username),))
+        cursor.execute("SELECT %s FROM usertable WHERE id = %s", (what, sanitize_input(username)))
         return cursor.fetchone()
 
     def user_exists(self, username: str) -> bool:
@@ -72,24 +72,32 @@ class DbConn:
     def user_password_hash(self, username: str) -> int:
         return self.get_user_data(username, "passwdhash")[0]
 
+    def get_token_username(self, token: str) -> str | None:
+        cursor = self.db_connection.cursor()
+        cursor.execute("SELECT id FROM usertable WHERE token = %s", (sanitize_input(token),))
+        return cursor.fetchone()[0]
+
     def create_user(self, username: str, password_hash: str, token: str):
         query = """
         INSERT INTO usertable (id, passwdhash, token)
         VALUES (%s, %s, %s)
         """
         values = (
-            sanitizeInput(username),
-            sanitizeInput(password_hash),
-            sanitizeInput(token),
+            sanitize_input(username),
+            sanitize_input(password_hash),
+            sanitize_input(token),
         )
         self.db_connection.cursor().execute(query, values)
 
     def update_user_data(self, username: str, data: str, values: tuple = ()):
-        query = f"UPDATE usertable SET {data} WHERE id = %s"
-        values = values + (sanitizeInput(username),)
+        # I know it is sql-injection prone, but data comes from 5 lines below
+        query = f"UPDATE usertable SET {data} WHERE id = %s"  # noqa: S608
+        values = (*values, sanitize_input(username))
         self.db_connection.cursor().execute(query, values)
 
     def update_user_balance(self, username: str, diff: int):
+        if diff == 0:
+            return
         self.update_user_data(username, "balance = balance + %s", (diff,))
 
     def update_user_spent(self, username: str, spent: int):
@@ -99,34 +107,43 @@ class DbConn:
         self.update_user_data(username, "playedgames = playedgames + 1")
 
     def update_user_token(self, username: str, token: str):
-        self.update_user_data(username, "token = %s", (sanitizeInput(token),))
+        self.update_user_data(username, "token = %s", (sanitize_input(token),))
 
 
 class User:
-    @staticmethod
-    def register(cls, username, password_hash):
+    @classmethod
+    def register(cls, username: str, password_hash: str) -> Self:
         db = DbConn()
+        if db.user_exists(username):
+            raise ValueError("User exists")
         token = get_hash(generate_random_string(255))
         db.create_user(username, password_hash, token)
-        return cls(username, password_hash, no_check=True)
+        return cls(username, token)
 
-    def __init__(self, username, password_hash, no_check: bool = False):
-        self.username = username
-        self.password_hash = password_hash
-        self._token = None
+    @classmethod
+    def auth(cls, token: str) -> Self:
+        db = DbConn()
+        username = db.get_token_username(token)
+        if username is None:
+            raise ValueError("Invalid token")
+        return cls(username, token)
+
+    @classmethod
+    def login(cls, username: str, password_hash: str) -> Self:
+        db = DbConn()
+        if not db.user_exists(username):
+            raise ValueError("Invalid username")
+        if password_hash != db.user_password_hash(username):
+            raise ValueError("Invalid password")
+        return cls(username)
+
+    def __init__(self, username: str, token: str | None = None):
         self.db = DbConn()
-        if not no_check:
-            if not self.db.user_exists(username):
-                raise ValueError("User does not exist")
-            if self.db.user_password_hash(self.username) != password_hash:
-                raise ValueError("Invalid password")
+        self.username = username
+        self._token = token
 
-    def view_info(self):
-        return (
-            f"ID : {self.username}\n"
-            f"Token : {self.token}\n"
-            f"Password Hash : {self.password_hash}"
-        )
+    def view_info(self) -> str:
+        return f"ID : {self.username}\nToken : {self.token}\nPassword Hash : {self.db.user_token(self.username)}"
 
     @property
     def token(self):
@@ -135,26 +152,26 @@ class User:
         return self._token
 
     @token.setter
-    def token(self, value):
+    def token(self, value: str):
         self._token = value
         self.db.update_user_token(self.username, value)
 
-    def balance(self):
+    def balance(self) -> int:
         return self.db.user_balance(self.username)
 
-    def update_balance(self, balance_modifier):
+    def update_balance(self, balance_modifier: int):
         self.db.update_user_balance(self.username, balance_modifier)
         if balance_modifier < 0:
             self.db.update_user_spent(self.username, -balance_modifier)
 
-    def update_playedgames(self):
+    def update_played_games(self):
         self.db.update_played_games(self.username)
 
 
-def get_hash(mystring):
+def get_hash(mystring: str) -> str:
     return hashlib.sha256(mystring.encode()).hexdigest()
 
 
-def generate_random_string(length):
+def generate_random_string(length: int) -> str:
     alphabet = string.ascii_letters + string.digits
     return "".join(secrets.choice(alphabet) for _ in range(length))

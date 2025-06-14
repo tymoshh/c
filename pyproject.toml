@@ -19,3 +19,23 @@ dev = [
 
 [tool.ruff]
 include = ["pyproject.toml", "src/**/*.py", "src/**/*.cgi"]
+exclude = ["stc/utils/dbcon.py"]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D",  # docstring
+    "EM101",  # Exception must not use a string literal
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "ANN201",  # Missing return type annotation, it forces -> None everywhere
+    "ANN202",  # Missing return type annotation, it forces -> None everywhere
+    "ANN204",  # Missing return type annotation, it forces -> None everywhere
+    "PGH004",  # Use specific rule codes when using `ruff: noqa`
+    "T201",  # `print` found
+    "EXE001",  # Shebang is present but file is not executable
+    "EXE003",  # Shebang should contain `python`, `pytest`, or `uv run`
+    "PLR2004",  # Magic value used in comparison
+    "S311",  # Standard pseudo-random generators are not suitable for cryptographic purposes
+    "COM812", # handled by ruff-format
+]
