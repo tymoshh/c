@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casino games</title>
+  <link rel="icon" href="/c/icon.png" type="image/png" />
+  <link rel="stylesheet" href="/c/styles.css" />
+</head>
+<body>
+
+  <!-- navbar will be inserted here -->
+  <div id="navbar"></div>
+  <script>
+    fetch("/c/navbar/navbar.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("navbar").innerHTML = html);
+  </script>
+
+  <!-- page title -->
+  <header class="casino-header">
+    <h1>casino games</h1>
+  </header>
+
+  <!-- games grid -->
+  <main>
+    <div class="games-grid">
+      <div class="game-box" onclick="location.href='/c/games/slotsy2/index.html'">
+        <img src="https://ipvnews.net/wp-content/uploads/2020/10/24154-1.jpg" alt="game1" />
+        <div class="game-title">slotsy</div>
+      </div>
+      <div class="game-box" onclick="location.href='/c/games/kosci2/index.html'">
+        <img src="https://tse3.mm.bing.net/th?id=OIP.Tm8YxjKkrVIIggANPrfshQHaEK&pid=Api" alt="game2" />
+        <div class="game-title">kosci</div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

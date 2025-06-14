@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+# Start in the directory of the target script
+DIR="$(dirname "$(realpath "$0")")"
+
+while [[ "$DIR" != "/" ]]; do
+    if [[ -x "$DIR/.venv/bin/python" ]]; then
+        exec "$DIR/.venv/bin/python" "$@"
+    fi
+    DIR="$(dirname "$DIR")"
+done
+
+echo "Error: .venv not found in any parent directory" >&2
+exit 1
