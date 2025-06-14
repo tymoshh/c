@@ -42,7 +42,7 @@ COPY --from=builder --chown=python:python /python /python
 USER mio
 WORKDIR /home/k24_c/mio/.homepage/c
 RUN mv /home/k24_c/mio/.homepage/src/* /home/k24_c/mio/.homepage/c
-RUN echo "/home/k24_c/mio/.homepage/c/lib" > /home/k24_c/mio/.homepage/.venv/lib/python3.12/site-packages/dbcon.pth
+RUN echo "/home/k24_c/mio/.homepage/c/utils" > /home/k24_c/mio/.homepage/.venv/lib/python3.12/site-packages/dbcon.pth
 RUN echo "export PATH=\$HOME/.homepage/.venv/bin:\$PATH" >> /home/k24_c/mio/.bashrc
 RUN find ./ -type f \( -name "*.html" -o -name "*.css" -o -name "*.js" \) -exec chmod 644 {} \; && \
         find ./ -type f \( -name "*.cgi" -o -name "*.py" \) -exec chmod 700 {} \; && \

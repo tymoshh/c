@@ -78,7 +78,7 @@ setup_venv() {
         
         uv sync --locked --no-dev
 
-        echo "${REMOTE_DIR}/lib" > "${REMOTE_DIR}/.venv/lib/python3.13/site-packages/dbcon.pth"
+        echo "${REMOTE_DIR}/utils" > "${REMOTE_DIR}/.venv/lib/python3.13/site-packages/dbcon.pth"
  
         echo "Virtual environment setup completed successfully"
 EOF
