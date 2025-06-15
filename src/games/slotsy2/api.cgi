@@ -19,6 +19,8 @@ def main(json_data: dict, user: User):
         return {"error": "Invalid JSON" + str(e)}
     slot_map = {1: "Seven", 2: "Bell", 3: "Grape", 4: "Cherry", 6: "Lemon"}
     bet_value = data.bet_value
+    if user.balance < bet_value:
+        raise ValueError("Too broke. lamo")
     user.update_balance(-bet_value)
     user.update_played_games()
     symbols = random.choices(list(slot_map.values()), k=3)

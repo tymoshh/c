@@ -9,33 +9,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       nav.innerHTML = html;
     })
     .catch(err => console.error('Navbar fetch failed:', err));
-    const bal = await getBal();
-    if (typeof bal !== 'undefined') {
-        nav.insertAdjacentHTML( 'beforeend', '<div class="nav-balance" style="color: white; margin-left: auto; padding-right: 15px; font-weight: bold;">' + bal + '$</div>');
+    const info = await get_info();
+    if (typeof info !== 'undefined') {
+        if (!Object.hasOwn(info, "error")) {
+            nav.insertAdjacentHTML( 'beforeend', '<div class="nav-balance" style="color: white; font-weight: bold;">' + info.balance + '$</div>');
+            nav.insertAdjacentHTML( 'beforeend', info.username);
+        }
     }
 });
-async function getBal() {
+async function get_info() {
     const token = Cookie.get('token');
     console.log(token)
     if (!token) {
         return null;
     }
-    const bal = await fetch('/c/user/api.cgi', {
+    const info = await fetch('/c/user/api.cgi', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        action: 'getbal',
-        token: token,
+        action: 'info',
       }),
     })
     .then(response => {
       return response.json();
     })
-    .then(data => {
-      return data.balance;
-    })
     .catch(err => console.error('Balance fetch failed:', err));
-    return bal;
+    return info;
 }

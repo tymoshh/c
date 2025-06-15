@@ -1,15 +1,26 @@
+import json
 import logging
 from collections.abc import Callable
 from json import dumps, loads
 from os import environ
 from sys import stdin
+from traceback import format_exception
 
 from dbconn import User
-def get_cookies() -> dict:
-    cookies_raw = environ.get("HTTP_COOKIE", "")
-    return dict(v.split("=") for v in cookies_raw.split("; "))
 
-def cgi_main(func1: Callable[[dict], dict] | Callable[[dict, User], dict] | None = None, *, require_login: bool = False):
+
+def get_cookies() -> dict:
+    """
+    Returns client's cookies
+    :return: dict of cookies
+    """
+    cookies_raw = environ.get("HTTP_COOKIE", "")
+    return dict(v.split("=") for v in cookies_raw.split("; ")) if cookies_raw != "" else dict()
+
+
+def cgi_main(
+    func1: Callable[[dict], dict] | Callable[[dict, User], dict] | None = None, *, require_login: bool = False
+):
     """
     Usage:
     @main
@@ -27,7 +38,6 @@ def cgi_main(func1: Callable[[dict], dict] | Callable[[dict, User], dict] | None
         user.update_balance(100)
         return {"status":"win"}
     """
-
     def wrapper(func: Callable[[dict], dict] | Callable[[dict, User], dict]):
         print("Content-Type: application/json\n")
         logging.basicConfig(
@@ -35,24 +45,28 @@ def cgi_main(func1: Callable[[dict], dict] | Callable[[dict, User], dict] | None
             format="%(asctime)s %(message)s",
             datefmt="[%Y-%m-%d %H:%M:%S]",
             level=logging.DEBUG,
+            force=True,
         )
-
-        try:
-            content_length = int(environ.get("CONTENT_LENGTH", "0"))
-        except (TypeError, ValueError):
+        logging.info("working")
+        raw_length = environ.get("CONTENT_LENGTH")
+        if raw_length and raw_length.isdigit():
+            content_length = int(raw_length)
+        else:
             content_length = 0
         raw_data = stdin.read(content_length) if content_length > 0 else input()
         data = loads(raw_data)
         if require_login:
-            if "token" not in cookies:
+            cookies = get_cookies()
+            if "token" not in cookies and "token" not in data:
+                logging.error(f"token not found, data: {data}, cookies: {cookies}")
                 print('{"error": "Token not found"}')
                 return
-            token = cookies["token"]
+            token = cookies.get("token", data["token"])
             try:
                 user = User.auth(token)
             except ValueError as e:
                 logging.exception("error", exc_info=e)
-                print('{"error": "Error: ' + str(e) + '"}')
+                print(json.dumps({"error": "Error: " + "".join(format_exception(e))}))
                 return
             args = [data, user]
         else:
@@ -61,7 +75,8 @@ def cgi_main(func1: Callable[[dict], dict] | Callable[[dict, User], dict] | None
             ret = func(*args)
         except Exception as e:
             logging.exception("Error", exc_info=e)
-            print('{"error": "Error: ' + str(e) + ", notes:" + " ".join(e.__notes__) + '"}')
+            logging.info("An error has happened")
+            print(json.dumps({"error": "Error: " + "".join(format_exception(e))}))
             return
         print(dumps(ret))
 

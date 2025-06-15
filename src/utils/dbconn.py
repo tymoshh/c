@@ -60,7 +60,7 @@ class DbConn:
 
     def get_user_data(self, username: str, what: str) -> tuple | None:
         cursor = self.db_connection.cursor()
-        cursor.execute(f"SELECT {what} FROM usertable WHERE id = %s", (sanitize_input(username),)) # noqa: S608
+        cursor.execute(f"SELECT {what} FROM usertable WHERE id = %s", (sanitize_input(username),))  # noqa: S608
         return cursor.fetchone()
 
     def user_exists(self, username: str) -> bool:
@@ -80,7 +80,8 @@ class DbConn:
     def get_token_username(self, token: str) -> str | None:
         cursor = self.db_connection.cursor()
         cursor.execute("SELECT id FROM usertable WHERE token = %s", (sanitize_input(token),))
-        return cursor.fetchone()[0]
+        token = cursor.fetchone()
+        return token[0] if token is not None else None
 
     def create_user(self, username: str, password_hash: str, token: str):
         query = """
@@ -125,6 +126,7 @@ class User:
             raise ValueError("User exists")
         token = get_hash(generate_random_string(255))
         db.create_user(username, get_hash(password), token)
+        db.update_user_balance(username, 100)
         return cls(username, token)
 
     @classmethod
@@ -153,7 +155,9 @@ class User:
         self._token = token
 
     def view_info(self) -> str:
-        return f"ID : {self.username}\nToken : {self.token}\nPassword Hash : {self.db.user_token(self.username)}"
+        return (
+            f"ID : {self.username}\nToken : {self.token}\nPassword Hash : {self.db.user_password_hash(self.username)}"
+        )
 
     @property
     def token(self):
