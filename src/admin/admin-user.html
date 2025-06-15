@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Management</title>
+  <link rel="stylesheet" href="/c/styles.css" />
+  <style>
+    nav {
+      margin-bottom: 20px;
+    }
+
+    .user-detail-container {
+      background-color: var(--container-bg);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 100%;
+      margin-top: 2rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .user-detail-container h2 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: var(--accent);
+      text-transform: lowercase;
+    }
+
+    .user-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-box {
+      background-color: var(--nav-bg);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .info-value {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .info-label {
+      color: var(--text-color);
+      font-size: 0.9rem;
+      text-transform: lowercase;
+    }
+
+    .admin-badge {
+      background-color: var(--accent);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .user-badge {
+      background-color: #666;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .actions-section {
+      margin-top: 2rem;
+    }
+
+    .action-group {
+      background-color: var(--nav-bg);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .action-group h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      text-transform: lowercase;
+      font-size: 1.1rem;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .action-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .action-input {
+      flex: 1;
+      padding: 0.6rem;
+      background-color: #333;
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .action-button {
+      padding: 0.6rem 1.2rem;
+      background-color: var(--accent);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-transform: lowercase;
+      min-width: 100px;
+    }
+
+    .action-button:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .action-button.danger {
+      background-color: #dc3545;
+    }
+
+    .action-button.danger:hover {
+      background-color: #c82333;
+    }
+
+    .back-button {
+      background-color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .back-button:hover {
+      background-color: #555;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--accent);
+      font-size: 1.2rem;
+      margin: 2rem 0;
+    }
+
+    .error {
+      text-align: center;
+      color: #ff4444;
+      font-size: 1.1rem;
+      margin: 2rem 0;
+    }
+
+    .toggle-button {
+      background-color: #666;
+      min-width: 120px;
+    }
+
+    .toggle-button.admin {
+      background-color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .action-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-button {
+        margin-top: 0.5rem;
+      }
+    }
+    button {
+      width: auto !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"><nav></nav></div>
+  <script src="/c/navbar/navbar.js" type="module"></script>
+
+  <div class="user-detail-container">
+    <button class="action-button back-button" onclick="window.location.href='/c/admin'">← back to admin panel</button>
+
+    <div id="loading" class="loading">Loading user data...</div>
+    <div id="error" class="error" style="display: none;"></div>
+
+    <div id="user-content" style="display: none;">
+      <h2 id="user-title">managing user: <span id="username-display"></span></h2>
+
+      <div class="user-info">
+        <div class="info-box">
+          <div class="info-value" id="balance-display">0</div>
+          <div class="info-label">current balance</div>
+        </div>
+        <div class="info-box">
+          <div class="info-value" id="spent-display">0</div>
+          <div class="info-label">money spent</div>
+        </div>
+        <div class="info-box">
+          <div class="info-value" id="games-display">0</div>
+          <div class="info-label">games played</div>
+        </div>
+        <div class="info-box">
+          <div class="info-value" id="status-display">user</div>
+          <div class="info-label">account status</div>
+        </div>
+        <div class="info-box">
+          <div class="info-value" id="created-display">-</div>
+          <div class="info-label">created at</div>
+        </div>
+        <div class="info-box">
+          <div class="info-value" id="updated-display">-</div>
+          <div class="info-label">last updated</div>
+        </div>
+      </div>
+
+      <div class="actions-section">
+        <div class="action-group">
+          <h3>balance management</h3>
+          <div class="action-row">
+            <input type="number" class="action-input" id="add-balance-input" placeholder="Amount to add" min="1">
+            <button class="action-button" onclick="modifyBalance('add')">add balance</button>
+          </div>
+          <div class="action-row">
+            <input type="number" class="action-input" id="remove-balance-input" placeholder="Amount to remove" min="1">
+            <button class="action-button danger" onclick="modifyBalance('remove')">remove balance</button>
+          </div>
+          <div class="action-row">
+            <input type="number" class="action-input" id="set-balance-input" placeholder="New balance" min="0">
+            <button class="action-button" onclick="modifyBalance('set')">set balance</button>
+          </div>
+        </div>
+
+        <div class="action-group">
+          <h3>account management</h3>
+          <div class="action-row">
+            <input type="number" class="action-input" id="set-spent-input" placeholder="New spent amount" min="0">
+            <button class="action-button" onclick="setSpent()">set money spent</button>
+          </div>
+          <div class="admin-status-row">
+            <span class="admin-status-label">Admin Status:</span>
+            <div class="admin-status-spacer"></div>
+            <button class="action-button toggle-button" id="admin-toggle" onclick="toggleAdmin()">toggle admin</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import Cookies from 'https://cdn.skypack.dev/js-cookie';
+    import Swal from 'https://cdn.skypack.dev/sweetalert2';
+
+    class UserDetailManager {
+      constructor() {
+        this.token = Cookies.get('token');
+        this.username = new URLSearchParams(window.location.search).get('user');
+        this.userData = null;
+        this.init();
+      }
+
+      async init() {
+        if (!this.token) {
+          await Swal.fire({
+            title: 'Access Denied',
+            text: 'You need to be logged in to access this page.',
+            icon: 'error'
+          });
+          window.location.href = '/c/user';
+          return;
+        }
+
+        if (!this.username) {
+          await Swal.fire({
+            title: 'Error',
+            text: 'No user specified.',
+            icon: 'error'
+          });
+          window.location.href = '/c/admin';
+          return;
+        }
+
+        await this.loadUserData();
+      }
+
+      async loadUserData() {
+        try {
+          const response = await fetch('/c/admin/api.cgi', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'get_user',
+              username: this.username
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          this.userData = data.user;
+          this.renderUserData();
+
+        } catch (error) {
+          console.error('Error loading user data:', error);
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('error').style.display = 'block';
+          document.getElementById('error').textContent = `Error: ${error.message}`;
+        }
+      }
+
+      renderUserData() {
+        document.getElementById('username-display').textContent = this.userData.username;
+        document.getElementById('balance-display').textContent = this.userData.balance;
+        document.getElementById('spent-display').textContent = this.userData.moneyspent;
+        document.getElementById('games-display').textContent = this.userData.playedgames;
+        document.getElementById('created-display').textContent = this.userData.created_at;
+        document.getElementById('updated-display').textContent = this.userData.updated_at;
+
+        const statusDisplay = document.getElementById('status-display');
+        if (this.userData.admin) {
+          statusDisplay.innerHTML = '<span class="admin-badge">admin</span>';
+        } else {
+          statusDisplay.innerHTML = '<span class="user-badge">user</span>';
+        }
+
+        const adminToggle = document.getElementById('admin-toggle');
+        adminToggle.textContent = this.userData.admin ? 'revoke admin' : 'grant admin';
+        adminToggle.className = this.userData.admin ? 'action-button toggle-button admin' : 'action-button toggle-button';
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('user-content').style.display = 'block';
+      }
+
+      async apiCall(action, data = {}) {
+        try {
+          const response = await fetch('/c/admin/api.cgi', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: action,
+              username: this.username,
+              ...data
+            })
+          });
+
+          const result = await response.json();
+
+          if (result.error) {
+            throw new Error(result.error);
+          }
+
+          return result;
+        } catch (error) {
+          await Swal.fire({
+            title: 'Error',
+            text: error.message,
+            icon: 'error'
+          });
+          throw error;
+        }
+      }
+
+      async refreshUserData() {
+        await this.loadUserData();
+      }
+    }
+
+    const userManager = new UserDetailManager();
+
+    // Global functions for button clicks
+    window.modifyBalance = async function(action) {
+      let input, actionType;
+
+      if (action === 'add') {
+        input = document.getElementById('add-balance-input');
+        actionType = 'add_balance';
+      } else if (action === 'remove') {
+        input = document.getElementById('remove-balance-input');
+        actionType = 'remove_balance';
+      } else if (action === 'set') {
+        input = document.getElementById('set-balance-input');
+        actionType = 'set_balance';
+      }
+
+      const value = parseInt(input.value);
+      if (!value || value < 0) {
+        await Swal.fire({
+          title: 'Invalid Input',
+          text: 'Please enter a valid positive number.',
+          icon: 'warning'
+        });
+        return;
+      }
+
+      try {
+        const result = await userManager.apiCall(actionType, { value: value });
+        await Swal.fire({
+          title: 'Success',
+          text: result.message,
+          icon: 'success'
+        });
+        input.value = '';
+        await userManager.refreshUserData();
+      } catch (error) {
+        // Error already handled in apiCall
+      }
+    };
+
+    window.setSpent = async function() {
+      const input = document.getElementById('set-spent-input');
+      const value = parseInt(input.value);
+
+      if (!value && value !== 0) {
+        await Swal.fire({
+          title: 'Invalid Input',
+          text: 'Please enter a valid number.',
+          icon: 'warning'
+        });
+        return;
+      }
+
+      try {
+        const result = await userManager.apiCall('set_spent', { value: value });
+        await Swal.fire({
+          title: 'Success',
+          text: result.message,
+          icon: 'success'
+        });
+        input.value = '';
+        await userManager.refreshUserData();
+      } catch (error) {
+        // Error already handled in apiCall
+      }
+    };
+
+    window.toggleAdmin = async function() {
+      const newStatus = !userManager.userData.admin;
+
+      const confirmation = await Swal.fire({
+        title: 'Confirm Action',
+        text: `Are you sure you want to ${newStatus ? 'grant' : 'revoke'} admin privileges for ${userManager.userData.username}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, proceed',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (!confirmation.isConfirmed) {
+        return;
+      }
+
+      try {
+        const result = await userManager.apiCall('set_admin', { admin_status: newStatus });
+        await Swal.fire({
+          title: 'Success',
+          text: result.message,
+          icon: 'success'
+        });
+        await userManager.refreshUserData();
+      } catch (error) {
+        // Error already handled in apiCall
+      }
+    };
+  </script>
+</body>
+</html>

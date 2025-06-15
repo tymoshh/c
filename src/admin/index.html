@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="/c/styles.css" />
+  <link rel="stylesheet" href="/c/admin/styles.css" />
+  <style>
+    .users-table tbody tr {
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .users-table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"><nav></nav></div>
+  <script src="/c/navbar/navbar.js" type="module"></script>
+
+  <div class="admin-container">
+    <h2>admin panel</h2>
+
+    <div class="stats-summary" id="stats-summary" style="display: none;">
+      <div class="stat-box">
+        <div class="stat-value" id="total-users">0</div>
+        <div class="stat-label">total users</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="total-balance">0</div>
+        <div class="stat-label">total balance</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="total-spent">0</div>
+        <div class="stat-label">total spent</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="total-games">0</div>
+        <div class="stat-label">games played</div>
+      </div>
+    </div>
+
+    <div id="loading" class="loading">Loading users data...</div>
+    <div id="error" class="error" style="display: none;"></div>
+
+    <table class="users-table" id="users-table" style="display: none;">
+      <thead>
+        <tr>
+          <th>username</th>
+          <th>balance</th>
+          <th>money spent</th>
+          <th>games played</th>
+          <th>created at</th>
+          <th>status</th>
+        </tr>
+      </thead>
+      <tbody id="users-tbody">
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import Cookies from 'https://cdn.skypack.dev/js-cookie';
+    import Swal from 'https://cdn.skypack.dev/sweetalert2';
+
+    class AdminPanel {
+      constructor() {
+        this.token = Cookies.get('token');
+        this.usersData = [];
+        this.init();
+      }
+
+      async init() {
+        if (!this.token) {
+          await Swal.fire({
+            title: 'Access Denied',
+            text: 'You need to be logged in to access the admin panel.',
+            icon: 'error',
+            confirmButtonText: 'Go to Login'
+          });
+          window.location.href = '/user';
+          return;
+        }
+
+        await this.loadUsersData();
+      }
+
+      async loadUsersData() {
+        try {
+          const response = await fetch('/c/admin/api.cgi', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'get_all_users'
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          this.usersData = data.users;
+          this.renderUsersTable();
+          this.renderStats();
+
+        } catch (error) {
+          console.error('Error loading users data:', error);
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('error').style.display = 'block';
+          document.getElementById('error').textContent = `Error: ${error.message}`;
+
+          if (error.message.includes('Access denied') || error.message.includes('Admin privileges')) {
+            await Swal.fire({
+              title: 'Access Denied',
+              text: 'You do not have admin privileges.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            window.location.href = '/';
+          }
+        }
+      }
+
+      renderUsersTable() {
+        const tbody = document.getElementById('users-tbody');
+        const loading = document.getElementById('loading');
+        const table = document.getElementById('users-table');
+
+        tbody.innerHTML = '';
+
+        this.usersData.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.username}</td>
+            <td>${user.balance}</td>
+            <td>${user.moneyspent}</td>
+            <td>${user.playedgames}</td>
+            <td>${user.created_at}</td>
+            <td>${user.admin ? '<span class="admin-badge">admin</span>' : 'user'}</td>
+          `;
+
+          // Make row clickable
+          row.addEventListener('click', () => {
+            window.location.href = `/c/admin/admin-user.html?user=${encodeURIComponent(user.username)}`;
+          });
+
+          tbody.appendChild(row);
+        });
+
+        loading.style.display = 'none';
+        table.style.display = 'table';
+      }
+
+      renderStats() {
+        const totalUsers = this.usersData.length;
+        const totalBalance = this.usersData.reduce((sum, user) => sum + user.balance, 0);
+        const totalSpent = this.usersData.reduce((sum, user) => sum + user.moneyspent, 0);
+        const totalGames = this.usersData.reduce((sum, user) => sum + user.playedgames, 0);
+
+        document.getElementById('total-users').textContent = totalUsers;
+        document.getElementById('total-balance').textContent = totalBalance;
+        document.getElementById('total-spent').textContent = totalSpent;
+        document.getElementById('total-games').textContent = totalGames;
+        document.getElementById('stats-summary').style.display = 'grid';
+      }
+    }
+
+    // Initialize admin panel
+    const adminPanel = new AdminPanel();
+  </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import logging
 from cgi_helper import cgi_main, get_cookies
 from dbconn import User
 
+
 @cgi_main
 def main(data: dict):
     if data["action"] == "login":

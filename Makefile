@@ -10,5 +10,12 @@ run:
 db:
 	docker compose exec db mysql --password=root
 
+prod_db:
+	ssh minionki mysql -p
+
 deploy:
 	./deploy.sh
+
+chmod:
+	find . -name "*.cgi" -type f -exec chmod +x {} \;
+	find . -name "*.py" -type f -exec chmod +x {} \;

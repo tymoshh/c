@@ -38,6 +38,7 @@ def cgi_main(
         user.update_balance(100)
         return {"status":"win"}
     """
+
     def wrapper(func: Callable[[dict], dict] | Callable[[dict, User], dict]):
         print("Content-Type: application/json\n")
         logging.basicConfig(
@@ -61,7 +62,9 @@ def cgi_main(
                 logging.error(f"token not found, data: {data}, cookies: {cookies}")
                 print('{"error": "Token not found"}')
                 return
-            token = cookies.get("token", data["token"])
+            token = cookies.get("token") or data.get("token")
+            if token is None:
+                raise ValueError("Token not found")
             try:
                 user = User.auth(token)
             except ValueError as e:

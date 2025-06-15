@@ -44,6 +44,7 @@ class DbConn:
                 `playedgames` INT DEFAULT 0,
                 `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `admin` BOOL DEFAULT 0,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `token_UNIQUE` (`token`),
                 INDEX `idx_token` (`token`),
@@ -77,11 +78,54 @@ class DbConn:
     def user_password_hash(self, username: str) -> int:
         return self.get_user_data(username, "passwdhash")[0]
 
+    def user_admin(self, username: str):
+        return self.get_user_data(username, "admin")[0]
+
+    def get_detailed_user_data(self, username: str):
+        """Get detailed data for a specific user"""
+        row = self.get_user_data(username, "id, balance, moneyspent, playedgames, created_at, updated_at, admin")
+        if not row:
+            raise ValueError("User not found")
+
+        user_data = {
+            "username": row[0],
+            "balance": row[1],
+            "moneyspent": row[2],
+            "playedgames": row[3],
+            "created_at": row[4].strftime("%Y-%m-%d %H:%M:%S") if row[4] else "",
+            "updated_at": row[5].strftime("%Y-%m-%d %H:%M:%S") if row[5] else "",
+            "admin": bool(row[6]),
+        }
+        return user_data
+
     def get_token_username(self, token: str) -> str | None:
         cursor = self.db_connection.cursor()
         cursor.execute("SELECT id FROM usertable WHERE token = %s", (sanitize_input(token),))
         token = cursor.fetchone()
         return token[0] if token is not None else None
+
+    def get_all_users_data(self):
+        cursor = self.db_connection.cursor()
+        cursor.execute("""
+            SELECT id, balance, moneyspent, playedgames, created_at, admin
+            FROM usertable 
+            ORDER BY created_at DESC
+            """)
+        rows = cursor.fetchall()
+
+        users_data = []
+        for row in rows:
+            user_data = {
+                "username": row[0],
+                "balance": row[1],
+                "moneyspent": row[2],
+                "playedgames": row[3],
+                "created_at": row[4].strftime("%Y-%m-%d %H:%M:%S") if row[4] else "",
+                "admin": bool(row[5]),
+            }
+            users_data.append(user_data)
+
+        return users_data
 
     def create_user(self, username: str, password_hash: str, token: str):
         query = """
@@ -116,6 +160,9 @@ class DbConn:
 
     def update_user_token(self, username: str, token: str):
         self.update_user_data(username, "token = %s", (sanitize_input(token),))
+
+    def update_admin(self, username: str, status: bool):
+        self.update_user_data(username, "admin = %s", (int(status),))
 
 
 class User:
@@ -174,6 +221,15 @@ class User:
     def balance(self) -> int:
         return self.db.user_balance(self.username)
 
+    @property
+    def admin(self) -> bool:
+        return self.db.user_admin(self.username)
+
+    @admin.setter
+    def admin(self, value: bool):
+        if value != self.admin:
+            self.db.update_admin(self.username, value)
+
     def update_balance(self, balance_modifier: int):
         self.db.update_user_balance(self.username, balance_modifier)
         if balance_modifier < 0:
@@ -190,3 +246,33 @@ def get_hash(mystring: str) -> str:
 def generate_random_string(length: int) -> str:
     alphabet = string.ascii_letters + string.digits
     return "".join(secrets.choice(alphabet) for _ in range(length))
+
+
+def get_all_users_data():
+    """Fetch all users data for admin panel"""
+    db = DbConn()
+    cursor = db.db_connection.cursor()
+
+    # Get all users with their stats
+    query = """
+    SELECT id, balance, moneyspent, playedgames, created_at, admin
+    FROM usertable 
+    ORDER BY created_at DESC
+    """
+
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    users_data = []
+    for row in rows:
+        user_data = {
+            "username": row[0],
+            "balance": row[1],
+            "moneyspent": row[2],
+            "playedgames": row[3],
+            "created_at": row[4].strftime("%Y-%m-%d %H:%M:%S") if row[4] else "",
+            "admin": bool(row[5]),
+        }
+        users_data.append(user_data)
+
+    return {"users": users_data}

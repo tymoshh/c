@@ -1,0 +1,96 @@
+nav {
+  margin-bottom: 20px;
+}
+
+.admin-container {
+  background-color: var(--container-bg);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  margin-top: 2rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.admin-container h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--accent);
+  text-transform: lowercase;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.users-table th,
+.users-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--accent);
+  color: var(--text-color);
+}
+
+.users-table th {
+  background-color: var(--nav-bg);
+  color: var(--accent);
+  font-weight: bold;
+  text-transform: lowercase;
+}
+
+.users-table tr:hover {
+  background-color: rgba(16, 168, 49, 0.1);
+}
+
+.admin-badge {
+  background-color: var(--accent);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.loading {
+  text-align: center;
+  color: var(--accent);
+  font-size: 1.2rem;
+  margin: 2rem 0;
+}
+
+.error {
+  text-align: center;
+  color: #ff4444;
+  font-size: 1.1rem;
+  margin: 2rem 0;
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
+  background-color: var(--nav-bg);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.stat-label {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  text-transform: lowercase;
+}
