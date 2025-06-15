@@ -12,7 +12,7 @@ print("Content-Type: application/json\n")
 
 class Data(BaseModel):
     token: str
-    betvalue: int
+    bet_value: int
 
 
 try:
@@ -37,7 +37,7 @@ except ValueError as e:
 bet_value = data.bet_value
 user.update_balance(-bet_value)
 user.update_played_games()
-symbols = random.choices(list(slot_map.values()), k=2)
+symbols = random.choices(list(slot_map.values()), k=3)
 if symbols[0] == symbols[1] == symbols[2]:
     if symbols[0] == "Seven":
         win_value = bet_value * 100

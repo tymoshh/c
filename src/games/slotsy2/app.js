@@ -46,7 +46,7 @@ function spin() {
 
   const payload = {
     token: token,
-    betvalue: 10
+    bet_value: 10
   };
 
   const symbolElements = [
@@ -88,10 +88,10 @@ function spin() {
   setTimeout(() => {
     clearInterval(intervalId);
 
-    if (requestFailed || !result) {
+    if (requestFailed || !result || Object.hasOwn(result, "error")) {
       Swal.fire({
         icon: "error",
-        title: "cos sie sypie",
+        title: result.error || "cos sie sypie",
         confirmButtonText: "klops"
       });
       return;
@@ -102,6 +102,11 @@ function spin() {
     symbolElements[2].textContent = getSymbol(result.symbols[2]);
 
     const winAmount = Number(result.winvalue);
+    var navBalanceElement = document.querySelector('.nav-balance');
+    var currentValue = parseInt(navBalanceElement.textContent);
+    var newValue = currentValue + winAmount - 10;
+    navBalanceElement.textContent = newValue.toString() + "$";
+
     if (winAmount > 0) {
       Swal.fire({
         icon: "success",
