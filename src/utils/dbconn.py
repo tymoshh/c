@@ -4,12 +4,14 @@ import re
 import secrets
 import string
 from typing import Self
+from logging import getLogger
 
 import mysql.connector
 from dotenv import load_dotenv
 from mysql.connector.abstracts import MySQLConnectionAbstract
 
 load_dotenv(os.environ.get("HOME", "/home/k24_c/mio") + "/.c/.env")
+logger = getLogger()
 
 
 def sanitize_input(input_str: str):
@@ -36,8 +38,8 @@ class DbConn:
                 `id` VARCHAR(255) NOT NULL,
                 `passwdhash` VARCHAR(255) NOT NULL,
                 `token` VARCHAR(255) NOT NULL,
-                `balance` DECIMAL(15,2) DEFAULT 0.00,
-                `moneyspent` DECIMAL(15,2) DEFAULT 0.00,
+                `balance` INT DEFAULT 0,
+                `moneyspent` INT DEFAULT 0,
                 `playedgames` INT DEFAULT 0,
                 `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -47,6 +49,7 @@ class DbConn:
                 INDEX `idx_id` (`id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """)
+            self.db_connection.commit()
 
     def __del__(self):
         self.num_active -= 1
@@ -56,12 +59,13 @@ class DbConn:
 
     def get_user_data(self, username: str, what: str) -> tuple | None:
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT %s FROM usertable WHERE id = %s", (what, sanitize_input(username)))
+        cursor.execute(f"SELECT {what} FROM usertable WHERE id = %s", (sanitize_input(username),))
         return cursor.fetchone()
 
     def user_exists(self, username: str) -> bool:
         # https://stackoverflow.com/a/4254003
-        return self.get_user_data(username, "COUNT(1)") is not None
+        logger.info(self.get_user_data(username, "1"))
+        return self.get_user_data(username, "1") is not None
 
     def user_balance(self, username: str) -> int:
         return self.get_user_data(username, "balance")[0]
@@ -88,12 +92,14 @@ class DbConn:
             sanitize_input(token),
         )
         self.db_connection.cursor().execute(query, values)
+        self.db_connection.commit()
 
     def update_user_data(self, username: str, data: str, values: tuple = ()):
         # I know it is sql-injection prone, but data comes from 5 lines below
         query = f"UPDATE usertable SET {data} WHERE id = %s"  # noqa: S608
         values = (*values, sanitize_input(username))
         self.db_connection.cursor().execute(query, values)
+        self.db_connection.commit()
 
     def update_user_balance(self, username: str, diff: int):
         if diff == 0:
@@ -112,12 +118,12 @@ class DbConn:
 
 class User:
     @classmethod
-    def register(cls, username: str, password_hash: str) -> Self:
+    def register(cls, username: str, password: str) -> Self:
         db = DbConn()
         if db.user_exists(username):
             raise ValueError("User exists")
         token = get_hash(generate_random_string(255))
-        db.create_user(username, password_hash, token)
+        db.create_user(username, get_hash(password), token)
         return cls(username, token)
 
     @classmethod
@@ -129,11 +135,14 @@ class User:
         return cls(username, token)
 
     @classmethod
-    def login(cls, username: str, password_hash: str) -> Self:
+    def login(cls, username: str, password: str) -> Self:
+        username = username.strip()
+        password = password.strip()
         db = DbConn()
         if not db.user_exists(username):
             raise ValueError("Invalid username")
-        if password_hash != db.user_password_hash(username):
+        if get_hash(password) != db.user_password_hash(username):
+            logger.info((get_hash(password), db.user_password_hash(username)))
             raise ValueError("Invalid password")
         return cls(username)
 
@@ -156,6 +165,7 @@ class User:
         self._token = value
         self.db.update_user_token(self.username, value)
 
+    @property
     def balance(self) -> int:
         return self.db.user_balance(self.username)
 

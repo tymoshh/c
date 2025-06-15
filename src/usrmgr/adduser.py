@@ -1,16 +1,11 @@
 #!/home/k24_c/mio/.homepage/c/run_cgi
-import dbcon
+from dbconn import User
 
 print("DODAWANIE UZYTKOWNIKOW DO KASYNA")
 ID = input("Podaj ID : ")
 PASSWD = input("Podaj haslo : ")
 
-user_object = dbcon.userClass(ID, dbcon.get_hash(PASSWD))
+user = User.register(ID, PASSWD)
 
-user_object.createPasswdHash()
-user_object.createToken()
-
-print(user_object.viewInfo())
-
-user_object.createUser()
+print(user.view_info())
 print("Uzytkownik dodany!")

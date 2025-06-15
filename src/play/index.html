@@ -9,13 +9,8 @@
 </head>
 <body>
 
-  <!-- navbar will be inserted here -->
-  <div id="navbar"></div>
-  <script>
-    fetch("/c/navbar/navbar.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("navbar").innerHTML = html);
-  </script>
+  <div id="navbar-container"><nav></nav></div>
+  <script src="/c/navbar/navbar.js" type="module"></script>
 
   <!-- page title -->
   <header class="casino-header">

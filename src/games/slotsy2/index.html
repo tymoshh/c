@@ -5,15 +5,15 @@
   <title>Slotsy2</title>
   <link rel="stylesheet" href="/c/styles.css" />
   <style>
-    #navbar-container {
+    nav {
       margin-bottom: 20px; /* spacing below navbar */
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar container -->
-  <div id="navbar-container"></div>
+  <div id="navbar-container"><nav></nav></div>
+  <script src="/c/navbar/navbar.js" type="module"></script>
 
   <div class="play-container">
     <h2>slotsy2</h2>
@@ -33,17 +33,5 @@
   <!-- Include SweetAlert and your logic -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="app.js"></script>
-
-  <script>
-    // Load navbar HTML dynamically and insert into #navbar-container
-    fetch('/c/navbar/navbar.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('navbar-container').innerHTML = data;
-      })
-      .catch(err => {
-        console.error('Failed to load navbar:', err);
-      });
-  </script>
 </body>
 </html>

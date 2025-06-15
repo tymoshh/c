@@ -10,8 +10,8 @@
 </head>
 <body>
 
-  <!-- navbar container will load external html -->
-  <div id="navbar-container"></div>
+  <div id="navbar-container"><nav></nav></div>
+  <script src="/c/navbar/navbar.js" type="module"></script>
 
   <!-- login container -->
   <div class="login-container" id="login-box">
@@ -36,13 +36,6 @@
   </div>
 
   <script>
-    // load navbar from external file
-    fetch('/c/navbar/navbar.html')
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById('navbar-container').innerHTML = html;
-      });
-
     // get cookie by name
     function getCookie(name) {
       const value = `; ${document.cookie}`;
@@ -81,15 +74,14 @@
         });
 
         const result = await response.json();
-
-        if (response.ok) {
+        if (result.token) {
           messageDiv.textContent = 'pomyslnie zalogowano';
           messageDiv.style.color = 'lime';
           document.cookie = `token=${result.token}; path=/; max-age=86400`;
           loginBox.style.display = 'none';
           alreadyLoggedInMessage.style.display = 'block';
         } else {
-          messageDiv.textContent = result.message || 'blad logowania';
+          messageDiv.textContent = result.error || 'blad logowania';
         }
       } catch (error) {
         console.error(error);

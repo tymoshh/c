@@ -2,35 +2,37 @@
 import json
 import os
 import sys
-from pathlib import Path
+import logging
+import traceback
 
-import dbcon
+from dbconn import User
 
-sys.stderr = Path("/tmp/mio-c-err.log").open(mode="w")  # noqa: S108 SIM115
+logging.basicConfig(filename="/tmp/mio-c-err.log", format="%(asctime)s %(message)s", datefmt="[%Y-%m-%d %H:%M:%S]", level=logging.DEBUG)
+log = logging.error
+log("working")
 print("Content-Type: application/json\n")
-
 
 try:
     content_length = int(os.environ.get("CONTENT_LENGTH", "0"))
 except (TypeError, ValueError):
     content_length = 0
-raw_data = sys.stdin.read(content_length) if content_length > 0 else ""
+raw_data = sys.stdin.read(content_length) if content_length > 0 else input()
 try:
     json_data = json.loads(raw_data)
-except json.JSONDecodeError:
-    print(json.dumps({"error": "Invalid JSON"}))
+except json.JSONDecodeError as e:
+    print(json.dumps({"error": "Invalid JSON " + str(e)}))
     sys.exit(1)
 
-if json_data["action"] == "login":
-    user_object = dbcon.userClass(json_data["username"], json_data["password"])
-    user_object.createPasswdHash()
-    user_object.fetchToken()
-    token_var = user_object.getToken()
-    print(json.dumps({"token": token_var}))
-elif json_data["action"] == "getbal":
-    user_object = dbcon.userClass(None, None)
-    user_object.setToken(json_data["token"])
-    balance_var = user_object.fetchBalance()
-    print(json.dumps({"balance": balance_var}))
-else:
-    print('"works!"')
+try:
+    if json_data["action"] == "login":
+        user = User.login(json_data["username"], json_data["password"])
+        log(json_data)
+        print(json.dumps({"token": user.token}))
+    elif json_data["action"] == "getbal":
+        user = User.auth(json_data["token"])
+        print(json.dumps({"balance": user.balance}))
+    else:
+        print('"works!"')
+except Exception as e:
+    log(traceback.format_exc())
+    print(json.dumps({"error": str(e)}))
