@@ -1,12 +1,9 @@
 #!/home/k24_c/mio/.homepage/c/run_cgi
-import dbcon
+from dbconn import User
 
 print("TESTOWE LOGOWANIE")
 ID = input("Podaj ID : ")
 PASSWD = input("Podaj haslo : ")
 
-user_object = dbcon.userClass(ID, PASSWD)
-user_object.createPasswdHash()
-
-user_object.fetchToken()
-user_object.viewToken()
+user = User.login(ID, PASSWD)
+print(user.token)

@@ -1,10 +1,11 @@
+#!/home/k24_c/mio/.homepage/c/run_cgi
 import hashlib
 import os
 import re
 import secrets
 import string
-from typing import Self
 from logging import getLogger
+from typing import Self
 
 import mysql.connector
 from dotenv import load_dotenv
@@ -59,7 +60,7 @@ class DbConn:
 
     def get_user_data(self, username: str, what: str) -> tuple | None:
         cursor = self.db_connection.cursor()
-        cursor.execute(f"SELECT {what} FROM usertable WHERE id = %s", (sanitize_input(username),))
+        cursor.execute(f"SELECT {what} FROM usertable WHERE id = %s", (sanitize_input(username),)) # noqa: S608
         return cursor.fetchone()
 
     def user_exists(self, username: str) -> bool:
