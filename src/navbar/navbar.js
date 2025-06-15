@@ -1,4 +1,4 @@
-import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/+esm'
+import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/+esm';
 const nav = document.getElementsByTagName("nav")[0];
 document.addEventListener('DOMContentLoaded', async () => {
   fetch('/c/navbar/navbar.html')

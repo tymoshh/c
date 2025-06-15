@@ -30,27 +30,31 @@
     <div class="message" id="message"></div>
   </div>
 
-  <!-- already logged in message -->
-  <div class="message" id="already-logged-in" style="display: none; font-size: 1.2rem; color: lime;">
-    juz jestes zalogowany
+  <div class="content-container">
+    <!-- already logged in message -->
+    <div class="message" id="already-logged-in" style="display: none; font-size: 1.2rem; color: lime;">
+      juz jestes zalogowany
+    </div>
+    <button id="logout" style="display: none; ">wylogoj</button>
   </div>
 
-  <script>
-    // get cookie by name
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
+  <script type="module">
+    import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/+esm';
 
-    const token = getCookie('token');
+    const token = Cookie.get('token');
     const loginBox = document.getElementById('login-box');
     const alreadyLoggedInMessage = document.getElementById('already-logged-in');
 
     if (token) {
       loginBox.style.display = 'none';
       alreadyLoggedInMessage.style.display = 'block';
+      logout.style.display = 'block';
     }
+
+    logout.addEventListener('click', () => {
+      Cookie.remove('token', { expires: 1 });
+      window.location.reload();
+    });
 
     // handle form submit
     document.getElementById('login-form').addEventListener('submit', async function (e) {
@@ -77,9 +81,10 @@
         if (result.token) {
           messageDiv.textContent = 'pomyslnie zalogowano';
           messageDiv.style.color = 'lime';
-          document.cookie = `token=${result.token}; path=/; max-age=86400`;
+          Cookie.set('token', result.token, { expires: 1 });
           loginBox.style.display = 'none';
           alreadyLoggedInMessage.style.display = 'block';
+          logout.style.display = 'block';
         } else {
           messageDiv.textContent = result.error || 'blad logowania';
         }
