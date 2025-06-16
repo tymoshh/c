@@ -231,9 +231,11 @@ class User:
             self.db.update_admin(self.username, value)
 
     def update_balance(self, balance_modifier: int):
-        self.db.update_user_balance(self.username, balance_modifier)
         if balance_modifier < 0:
+            if self.balance < abs(balance_modifier):
+                raise ValueError("Too broke. lamo")
             self.db.update_user_spent(self.username, -balance_modifier)
+        self.db.update_user_balance(self.username, balance_modifier)
 
     def update_played_games(self):
         self.db.update_played_games(self.username)

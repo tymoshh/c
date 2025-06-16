@@ -246,10 +246,6 @@
 
         <div class="action-group">
           <h3>account management</h3>
-          <div class="action-row">
-            <input type="number" class="action-input" id="set-spent-input" placeholder="New spent amount" min="0">
-            <button class="action-button" onclick="setSpent()">set money spent</button>
-          </div>
           <div class="admin-status-row">
             <span class="admin-status-label">Admin Status:</span>
             <div class="admin-status-spacer"></div>
@@ -414,33 +410,6 @@
 
       try {
         const result = await userManager.apiCall(actionType, { value: value });
-        await Swal.fire({
-          title: 'Success',
-          text: result.message,
-          icon: 'success'
-        });
-        input.value = '';
-        await userManager.refreshUserData();
-      } catch (error) {
-        // Error already handled in apiCall
-      }
-    };
-
-    window.setSpent = async function() {
-      const input = document.getElementById('set-spent-input');
-      const value = parseInt(input.value);
-
-      if (!value && value !== 0) {
-        await Swal.fire({
-          title: 'Invalid Input',
-          text: 'Please enter a valid number.',
-          icon: 'warning'
-        });
-        return;
-      }
-
-      try {
-        const result = await userManager.apiCall('set_spent', { value: value });
         await Swal.fire({
           title: 'Success',
           text: result.message,

@@ -1,26 +1,15 @@
 #!/home/k24_c/mio/.homepage/c/run_cgi
 import random
 
-from cgi_helper import cgi_main
+from cgi_app import CgiApp
 from dbconn import User
-from pydantic import BaseModel, ValidationError
 
+app = CgiApp()
 
-class Data(BaseModel):
-    token: str
-    bet_value: int
-
-
-@cgi_main(require_login=True)
-def main(json_data: dict, user: User):
-    try:
-        data = Data(**json_data)
-    except ValidationError as e:
-        return {"error": "Invalid JSON" + str(e)}
+@app.action(require_login=True)
+def main(data: dict, user: User):
     slot_map = {1: "Seven", 2: "Bell", 3: "Grape", 4: "Cherry", 6: "Lemon"}
-    bet_value = data.bet_value
-    if user.balance < bet_value:
-        raise ValueError("Too broke. lamo")
+    bet_value = data["bet_value"]
     user.update_balance(-bet_value)
     user.update_played_games()
     symbols = random.choices(list(slot_map.values()), k=3)
@@ -38,3 +27,5 @@ def main(json_data: dict, user: User):
 
     user.update_balance(win_value)
     return {"winvalue": win_value, "symbols": symbols}
+
+app.run()
