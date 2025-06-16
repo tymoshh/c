@@ -173,7 +173,7 @@ class User:
             raise ValueError("User exists")
         token = get_hash(generate_random_string(255))
         db.create_user(username, get_hash(password), token)
-        db.update_user_balance(username, 100)
+        db.update_user_balance(username, 500)
         return cls(username, token)
 
     @classmethod
