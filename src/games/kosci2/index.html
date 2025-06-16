@@ -2,22 +2,395 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gra w Kości</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/c/styles.css">
+    <style>
+        /* Game-specific overrides for dice game */
+        body.game-page {
+            height: 100vh;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .dice-container-main {
+            background-color: var(--game-container-bg);
+            border: 2px solid var(--game-accent);
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(16, 168, 49, 0.5);
+            text-align: center;
+        }
+
+        .dice-title {
+            color: var(--game-accent);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-transform: lowercase;
+            font-weight: 600;
+        }
+
+        .bet-section {
+            margin-bottom: 2rem;
+        }
+
+        .bet-section label {
+            color: var(--game-text-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #bet {
+            width: 200px;
+            padding: 0.8rem;
+            font-size: 1.2rem;
+            background-color: #333;
+            border: 1px solid var(--game-accent);
+            border-radius: 5px;
+            color: white;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+
+        #bet:focus {
+            outline: none;
+            border-color: var(--game-accent-hover);
+            box-shadow: 0 0 5px rgba(16, 168, 49, 0.3);
+        }
+
+        #rollBtn {
+            background-color: var(--game-accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 1rem;
+            text-transform: lowercase;
+            width: auto;
+        }
+
+        #rollBtn:hover {
+            background-color: var(--game-accent-hover);
+        }
+
+        #rollBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .dice-visual-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .dice-visual {
+            width: 80px;
+            height: 80px;
+            background-color: var(--container-bg);
+            border: 2px solid var(--game-accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--game-text-color);
+            box-shadow: 0 0 5px rgba(16, 168, 49, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .dice-visual.rolling {
+            animation: rollAnimation 0.6s ease-in-out;
+        }
+
+        @keyframes rollAnimation {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            75% { transform: rotate(270deg) scale(1.1); }
+        }
+
+        .result-section {
+            background-color: rgba(16, 168, 49, 0.1);
+            border: 1px solid var(--game-accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            background-color: var(--container-bg);
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+
+        .result-label {
+            color: var(--game-text-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .result-value {
+            color: var(--game-accent);
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .total-section, .win-section {
+            background-color: var(--container-bg);
+            border: 1px solid var(--game-accent);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+
+        .total-section .result-label,
+        .win-section .result-label {
+            color: var(--game-text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .total-section .result-value {
+            color: var(--game-accent);
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .win-section .result-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .win-section.positive .result-value {
+            color: var(--game-accent);
+        }
+
+        .win-section.negative .result-value {
+            color: #ff4444;
+        }
+
+        .win-section.neutral .result-value {
+            color: var(--game-text-color);
+        }
+
+        @media (max-width: 480px) {
+            .dice-container-main {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+
+            .dice-title {
+                font-size: 2rem;
+            }
+
+            .dice-visual-container {
+                gap: 1rem;
+            }
+
+            .dice-visual {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Gra w Kości</h1>
-        <label for="bet">Zakład:</label>
-        <input type="number" id="bet" min="1" value="10">
-        <button id="rollBtn">Rzuć Kośćmi</button>
-        <div id="result">
-            <p>Kość 1: <span id="dice1">-</span></p>
-            <p>Kość 2: <span id="dice2">-</span></p>
-            <p>Suma: <span id="total">-</span></p>
-            <p>Wygrana: <span id="winvalue">-</span></p>
+<body class="game-page">
+    <div class="dice-container-main">
+        <h1 class="dice-title">🎲 gra w kości 🎲</h1>
+
+        <div class="bet-section">
+            <label for="bet">twój zakład:</label>
+            <input type="number" id="bet" min="1" value="10">
+        </div>
+
+        <button id="rollBtn">rzuć kośćmi!</button>
+
+        <div class="dice-visual-container">
+            <div class="dice-visual" id="dice1-visual">?</div>
+            <div class="dice-visual" id="dice2-visual">?</div>
+        </div>
+
+        <div class="result-section" id="result">
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-label">kość 1</div>
+                    <div class="result-value" id="dice1">-</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">kość 2</div>
+                    <div class="result-value" id="dice2">-</div>
+                </div>
+            </div>
+
+            <div class="total-section">
+                <div class="result-label">suma</div>
+                <div class="result-value" id="total">-</div>
+            </div>
+
+            <div class="win-section" id="win-section">
+                <div class="result-label">wynik</div>
+                <div class="result-value" id="winvalue">-</div>
+            </div>
         </div>
     </div>
-    <script src="app.js"></script>
+
+    <script>
+        class DiceGame {
+            constructor() {
+                this.rollBtn = document.getElementById('rollBtn');
+                this.betInput = document.getElementById('bet');
+                this.dice1Visual = document.getElementById('dice1-visual');
+                this.dice2Visual = document.getElementById('dice2-visual');
+                this.resultSection = document.getElementById('result');
+                this.dice1Result = document.getElementById('dice1');
+                this.dice2Result = document.getElementById('dice2');
+                this.totalResult = document.getElementById('total');
+                this.winValueResult = document.getElementById('winvalue');
+                this.winSection = document.getElementById('win-section');
+
+                this.init();
+            }
+
+            init() {
+                this.rollBtn.addEventListener('click', () => this.rollDice());
+                this.betInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.rollDice();
+                    }
+                });
+            }
+
+            async rollDice() {
+                const bet = parseInt(this.betInput.value);
+
+                if (!bet || bet < 1) {
+                    alert('wprowadź poprawną kwotę zakładu!');
+                    return;
+                }
+
+                // Disable button and show rolling animation
+                this.rollBtn.disabled = true;
+                this.rollBtn.textContent = 'rzucanie...';
+                this.dice1Visual.classList.add('rolling');
+                this.dice2Visual.classList.add('rolling');
+
+                // Simulate rolling animation
+                await this.animateRolling();
+
+                // Call backend API
+                try {
+                    const response = await fetch("/c/games/kosci2/api.cgi", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: "roll",
+                            bet_value: bet
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.error) {
+                        alert("błąd: " + data.error);
+                        this.resetButton();
+                        return;
+                    }
+
+                    // Update visual dice
+                    this.dice1Visual.textContent = data.dice[0];
+                    this.dice2Visual.textContent = data.dice[1];
+                    this.dice1Visual.classList.remove('rolling');
+                    this.dice2Visual.classList.remove('rolling');
+
+                    // Update results
+                    this.dice1Result.textContent = data.dice[0];
+                    this.dice2Result.textContent = data.dice[1];
+                    this.totalResult.textContent = data.dice[0] + data.dice[1];
+
+                    // Update winnings display with proper styling
+                    const winValue = parseFloat(data.win);
+                    if (winValue > 0) {
+                        this.winValueResult.textContent = `+${data.win} PLN`;
+                        this.winSection.className = 'win-section positive';
+                    } else if (winValue < 0) {
+                        this.winValueResult.textContent = `${data.win} PLN`;
+                        this.winSection.className = 'win-section negative';
+                    } else {
+                        this.winValueResult.textContent = '0 PLN';
+                        this.winSection.className = 'win-section neutral';
+                    }
+
+                    // Show results
+                    this.resultSection.style.display = 'block';
+
+                } catch (error) {
+                    alert("błąd połączenia z serwerem.");
+                    console.error(error);
+                    this.resetRollingDice();
+                }
+
+                // Re-enable button
+                this.resetButton();
+            }
+
+            async animateRolling() {
+                return new Promise(resolve => {
+                    let count = 0;
+                    const interval = setInterval(() => {
+                        this.dice1Visual.textContent = Math.floor(Math.random() * 6) + 1;
+                        this.dice2Visual.textContent = Math.floor(Math.random() * 6) + 1;
+                        count++;
+
+                        if (count > 8) {
+                            clearInterval(interval);
+                            resolve();
+                        }
+                    }, 100);
+                });
+            }
+
+            resetButton() {
+                this.rollBtn.disabled = false;
+                this.rollBtn.textContent = 'rzuć ponownie!';
+            }
+
+            resetRollingDice() {
+                this.dice1Visual.classList.remove('rolling');
+                this.dice2Visual.classList.remove('rolling');
+                this.dice1Visual.textContent = '?';
+                this.dice2Visual.textContent = '?';
+            }
+        }
+
+        // Initialize the game when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new DiceGame();
+        });
+    </script>
 </body>
 </html>

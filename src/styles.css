@@ -7,14 +7,14 @@
     --accent-hover: #10a831;
     --nav-bg: #121212;
     --nav-text: #ccebd4;
-  
+
     /* Removed game-accent-red, use green instead */
     --game-accent: var(--accent);
     --game-accent-hover: var(--accent-hover);
     --game-text-color: var(--text-color);
     --game-container-bg: var(--container-bg);
   }
-  
+
   /* ==== global styles ==== */
   body {
     margin: 0;
@@ -27,7 +27,7 @@
     align-items: center;
     min-height: 100vh;
   }
-  
+
   nav {
     width: 100%;
     padding: 0.8rem 1.5rem;
@@ -43,12 +43,12 @@
     align-items: center;
     gap: 14px;
   }
-  
+
   .nav-left img {
     width: 36px;
     height: 36px;
   }
-  
+
   .nav-title {
     font-size: 1.6rem;
     font-weight: 600;
@@ -56,7 +56,7 @@
     color: var(--nav-text);
     text-transform: uppercase;
   }
-  
+
   nav ul {
     list-style: none;
     display: flex;
@@ -64,24 +64,24 @@
     margin: 0;
     padding: 0;
   }
-  
+
   nav ul li a {
     color: var(--nav-text);
     text-decoration: none;
     font-weight: bold;
     transition: opacity 0.2s;
   }
-  
+
   nav ul li a:hover {
     opacity: 0.8;
   }
-  
+
   .nav-user img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
   }
-  
+
   /* ==== login container (renamed play-container if needed) ==== */
   .login-container, .play-container {
     background-color: var(--container-bg);
@@ -93,24 +93,24 @@
     margin-top: 2rem;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }
-  
+
   .login-container h2, .play-container h2 {
     margin-bottom: 1.5rem;
     text-align: center;
     color: var(--accent);
     text-transform: lowercase;
   }
-  
+
   .form-group {
     margin-bottom: 1rem;
   }
-  
+
   label {
     display: block;
     margin-bottom: 0.5rem;
     color: var(--text-color);
   }
-  
+
   input {
     width: 100%;
     padding: 0.6rem;
@@ -119,7 +119,7 @@
     border-radius: 5px;
     color: #fff;
   }
-  
+
   /* ==== button styles ==== */
   button {
     width: 100%;
@@ -133,17 +133,17 @@
     cursor: pointer;
     transition: background-color 0.2s;
   }
-  
+
   button:hover {
     background-color: var(--accent-hover);
   }
-  
+
   .message {
     margin-top: 1rem;
     text-align: center;
     color: var(--accent);
   }
-  
+
   /* ==== casino games subpage ==== */
   .casino-header h1 {
     font-size: 2.5rem;
@@ -152,7 +152,7 @@
     margin-bottom: 2rem;
     text-align: center;
   }
-  
+
   .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -161,7 +161,7 @@
     max-width: 1000px;
     margin-top: 2rem;
   }
-  
+
   .game-box {
     background-color: var(--container-bg);
     border: 2px solid var(--accent);
@@ -174,35 +174,35 @@
     text-align: center;
     transition: transform 0.2s;
   }
-  
+
   .game-box:hover {
     transform: scale(1.03);
   }
-  
+
   .game-box img {
     width: 100%;
     height: 150px;
     object-fit: cover;
   }
-  
+
   .game-title {
     padding: 1rem;
     font-size: 1.1rem;
     color: var(--text-color);
     text-transform: lowercase;
   }
-  
+
   /* ==== responsive tweaks ==== */
   @media (max-width: 600px) {
     .casino-header h1 {
       font-size: 2rem;
     }
-  
+
     .game-title {
       font-size: 1rem;
     }
   }
-  
+
   /* ==== game-specific overrides and styles ==== */
   body.game-page {
     /* Use flex centering from your game-specific style */
@@ -212,7 +212,7 @@
     color: var(--game-text-color);
     background-color: var(--main-bg);
   }
-  
+
   .slot-box {
     display: flex;
     justify-content: center;
@@ -226,34 +226,34 @@
     font-size: 48px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-  
+
   .win-box {
     margin-top: 20px;
     text-align: center;
     font-size: 1.5rem;
     color: var(--game-accent);
   }
-  
+
   button {
     background-color: var(--game-accent);
     margin-top: 1rem;
   }
-  
+
   button:hover {
     background-color: var(--game-accent-hover);
   }
-  
+
   /* SweetAlert2 Dark Mode + Green Button Styling */
   .swal2-popup {
     background-color: var(--game-container-bg) !important;
     color: var(--game-text-color) !important;
     border: 1px solid var(--game-accent) !important;
   }
-  
+
   .swal2-title {
     color: var(--game-text-color) !important;
   }
-  
+
   .swal2-confirm {
     background-color: var(--game-accent) !important;
     color: white !important;
@@ -264,8 +264,7 @@
     box-shadow: none !important;
     transition: background-color 0.2s ease !important;
   }
-  
+
   .swal2-confirm:hover {
     background-color: var(--game-accent-hover) !important;
   }
-  

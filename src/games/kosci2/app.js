@@ -5,7 +5,7 @@ document.getElementById("rollBtn").addEventListener("click", () => {
         method: "POST",
         body: JSON.stringify({
             action: "roll",
-            betvalue: bet
+            bet_value: bet
         })
     })
     .then(res => res.json())
@@ -14,10 +14,10 @@ document.getElementById("rollBtn").addEventListener("click", () => {
             alert("Błąd: " + data.error);
             return;
         }
-        document.getElementById("dice1").textContent = data.dice1;
-        document.getElementById("dice2").textContent = data.dice2;
-        document.getElementById("total").textContent = data.total;
-        document.getElementById("winvalue").textContent = data.winvalue;
+        document.getElementById("dice1").textContent = data.dice[0];
+        document.getElementById("dice2").textContent = data.dice[1];
+        document.getElementById("total").textContent = data.dice[0] + data.dice[1];
+        document.getElementById("winvalue").textContent = data.win;
     })
     .catch(err => {
         alert("Błąd połączenia z serwerem.");
